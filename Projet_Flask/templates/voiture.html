@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8"/> 
+    <title>Liste des personnages</title>
+    <meta name="author" content="Ayyoub"/>
+    <meta name="keywords" content="A COMPLETER"/>
+</head>
+<body>
+    <h1>Liste des voiture </h1>
+    <ul>
+        {% for i in voiture%}
+            <li>{{i['prenom']}} : {{i['race']}} | Puissance: {{i['puissance']}}</li>
+        {% endfor %}
+    <ul>
+</body>
+</html>

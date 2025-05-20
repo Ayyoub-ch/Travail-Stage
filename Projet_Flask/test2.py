@@ -19,3 +19,24 @@ liste_perso=[
 def perso():
     classe=(request.args.get('c'))
     return render_template('perso.html',perso=liste_perso)
+
+liste_perso=[
+    {'prenom':'Goku', 'type':'essence','capacité':50},
+    {'prenom':'Vegeta', 'type':'électrique' ,'capacité':50},
+    {'prenom':'Trunks', 'type':'essence' ,'puissancapacitéce':45},
+    {'prenom':'Boo', 'type':'électrique' ,'capacité':70},
+    {'prenom':'Piccolo', 'type':'essence' ,'capacité':40}
+]
+
+@app.route('/bagnole')
+def perso():
+    classe=(request.args.get('c'))
+    return render_template('perso.html',perso=liste_perso)
+
+liste_voiture=[
+    {'marque':'Goku', 'race':'Saiyan','puissance':50},
+    {'marque':'Vegeta', 'race':'Saiyan' ,'puissance':50},
+    {'marque':'Trunks', 'race':'Hybrid' ,'puissance':45},
+    {'marque':'Boo', 'race':'Majin' ,'puissance':70},
+    {'marque':'Piccolo', 'type':'Namek' ,'puissance':40}
+]
