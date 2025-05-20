@@ -46,7 +46,9 @@ def update(self):
 #Lecture de données
 def lecture(self):
     self.cursor.execute("SELECT login,mdp from log")
+    return self.cursor.fetchall()# On retourne les données pour pouvoir les utiliser après appel
 
 #Suppression de données (on va appuyer sur un bouton au besoin)
 def delete(self):
-    self.cursor.execute("DELETE FROM log WHERE login =%s AND mdp=%s")
+    self.cursor.execute("DELETE FROM log WHERE login =%s AND mdp=%s")# Exécution de la requête en passant les valeurs à supprimer
+    self.conn.commit()# Validation des suppressions dans la base (commit obligatoire après DELETE)
