@@ -6,12 +6,13 @@ app = Flask(__name__)
 
 #Classe Connexion
 class Connexion:
-    def __init__(self, host='localhost', user='root', password='', database='log'):
+    def __init__(self, host='localhost', user='root', password='', database='log',port=3306):
         self.conn = mysql.connector.connect(
             host=host,
             user=user,
             password=password,
-            database=database
+            database=database,
+            port=port,
         )
         self.cursor = self.conn.cursor()
 
@@ -19,11 +20,32 @@ class Connexion:
         sql = "INSERT INTO log (login, mdp) VALUES (%s, %s)"
         self.cursor.execute(sql, (login, mdp))
         self.conn.commit()
+
+    def update(self, new_password, login):
+        sql = "UPDATE log SET mdp = %s WHERE login = %s"
+        self.cursor.execute(sql, (new_password, login))
+        self.conn.commit()
+
+    def lecture(self):
+        self.cursor.execute("SELECT login, mdp FROM log")
+        return self.cursor.fetchall()
+
+    def delete(self, login, mdp):
+        sql = "DELETE FROM log WHERE login = %s AND mdp = %s"
+        self.cursor.execute(sql, (login, mdp))
+        self.conn.commit()
+    
+    def existe(self, login, mdp):
+        sql = "SELECT * FROM log WHERE login = %s AND mdp = %s"
+        self.cursor.execute(sql, (login, mdp))
+        result = self.cursor.fetchone()
+        return result is not None
     
 # Page de login (GET)
 @app.route('/')
 def login():
     return render_template('login.html')
+
 
 # Insertion des données (POST)
 @app.route('/insert', methods=['POST'])
@@ -35,20 +57,22 @@ def insert():
     conn.insert(login, mdp)
 
     return render_template('success.html', login=login)
-    
 
-#Mise à jour de données (après Insertion dans la base de données)
-def update(self):
-    self.cursor.execute("UPDATE log SET mdp = %s WHERE login = %s")
-    self.cursor.execute(sql, (new_password, login))
-    self.conn.commit()
+@app.route('/verifier', methods=['POST'])
+def verifier():
+    login = request.form['login']
+    mdp = request.form['mdp']
 
-#Lecture de données
-def lecture(self):
-    self.cursor.execute("SELECT login,mdp from log")
-    return self.cursor.fetchall()# On retourne les données pour pouvoir les utiliser après appel
+    conn = Connexion()
+    if conn.existe(login, mdp):
+        return render_template('success.html', login=login)
+    else:
+        conn.insert(login, mdp)
+        return render_template('creation_utilisateur.html')
 
-#Suppression de données (on va appuyer sur un bouton au besoin)
-def delete(self):
-    self.cursor.execute("DELETE FROM log WHERE login =%s AND mdp=%s")# Exécution de la requête en passant les valeurs à supprimer
-    self.conn.commit()# Validation des suppressions dans la base (commit obligatoire après DELETE)
+
+# Point d'entrée principal
+if __name__ == '__main__':
+    # ⚠️ Ne pas appeler de méthode ici !
+    # ✅ On démarre juste l'application Flask
+    app.run(debug=True)
