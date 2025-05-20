@@ -17,26 +17,26 @@ class Connexion:
         self.cursor = self.conn.cursor()
 
     def insert(self, login, mdp):
-        sql = "INSERT INTO log (login, mdp) VALUES (%s, %s)"
+        sql = "INSERT INTO connexion (login, mdp) VALUES (%s, %s)"
         self.cursor.execute(sql, (login, mdp))
         self.conn.commit()
 
     def update(self, new_password, login):
-        sql = "UPDATE log SET mdp = %s WHERE login = %s"
+        sql = "UPDATE connexion SET mdp = %s WHERE login = %s"
         self.cursor.execute(sql, (new_password, login))
         self.conn.commit()
 
     def lecture(self):
-        self.cursor.execute("SELECT login, mdp FROM log")
+        self.cursor.execute("SELECT login, mdp FROM connexion")
         return self.cursor.fetchall()
 
     def delete(self, login, mdp):
-        sql = "DELETE FROM log WHERE login = %s AND mdp = %s"
+        sql = "DELETE FROM connexion WHERE login = %s AND mdp = %s"
         self.cursor.execute(sql, (login, mdp))
         self.conn.commit()
     
     def existe(self, login, mdp):
-        sql = "SELECT * FROM log WHERE login = %s AND mdp = %s"
+        sql = "SELECT * FROM connexion WHERE login = %s AND mdp = %s"
         self.cursor.execute(sql, (login, mdp))
         result = self.cursor.fetchone()
         return result is not None
@@ -44,7 +44,7 @@ class Connexion:
 # Page de login (GET)
 @app.route('/')
 def login():
-    return render_template('login.html')
+    return render_template('templates/login.html')
 
 
 # Insertion des données (POST)
@@ -56,7 +56,7 @@ def insert():
     conn = Connexion()
     conn.insert(login, mdp)
 
-    return render_template('success.html', login=login)
+    return render_template('templates/success.html', login=login)
 
 @app.route('/verifier', methods=['POST'])
 def verifier():
@@ -65,10 +65,10 @@ def verifier():
 
     conn = Connexion()
     if conn.existe(login, mdp):
-        return render_template('success.html', login=login)
+        return render_template('templates/success.html', login=login)
     else:
         conn.insert(login, mdp)
-        return render_template('creation_utilisateur.html')
+        return render_template('templates/creation_utilisateur.html')
 
 
 # Point d'entrée principal
