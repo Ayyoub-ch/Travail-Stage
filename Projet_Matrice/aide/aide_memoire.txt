@@ -15,3 +15,16 @@ fonctions:
 insérer les données --> insert
 afficher les données--> affichage de données via html
 faire un tableau OU placer les données--> tableau dans le html puis mettre les données 
+
+
+ok donc au final les tables seront :
+
+
+
+personne id, nom, prenom, poste
+
+hard: id competence, categorie
+
+soft: id, competence
+
+matrice: id personne, id soft skill, id hard skill, niveau

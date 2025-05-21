@@ -20,33 +20,33 @@ class Matrice:
         )
         self.cursor = self.conn.cursor()
 
-    #Partie Dev
+    #Partie Personne
     def insert_dev(self, nom, prenom):
-        sql = "INSERT INTO dev (nom, prenom) VALUES (%s, %s)"
+        sql = "INSERT INTO personne (nom, prenom) VALUES (%s, %s)"
         self.cursor.execute(sql, (nom, prenom))
         self.conn.commit()
 
     def update_dev(self, new_prenom, nom):
-        sql = "UPDATE dev SET nom = %s WHERE prenom = %s"
+        sql = "UPDATE personne SET nom = %s WHERE prenom = %s"
         self.cursor.execute(sql, (new_prenom, nom))
         self.conn.commit()
     
     def update_dev2(self, new_nom, prenom):
-        sql = "UPDATE dev SET prenom = %s WHERE nom = %s"
+        sql = "UPDATE personne SET prenom = %s WHERE nom = %s"
         self.cursor.execute(sql, (new_nom, prenom))
         self.conn.commit()
     
     def lecture_dev(self):
-        self.cursor.execute("SELECT nom, prenom FROM dev")
+        self.cursor.execute("SELECT nom, prenom FROM personne")
         return self.cursor.fetchall()
     
     def delete_dev(self, nom, prenom):
-        sql = "DELETE FROM dev WHERE nom = %s AND prenom = %s"
+        sql = "DELETE FROM personne WHERE nom = %s AND prenom = %s"
         self.cursor.execute(sql, (nom, prenom))
         self.conn.commit()
     
     def existe_dev(self, prenom, nom):
-        sql = "SELECT * FROM dev WHERE nom = %s AND prenom = %s"
+        sql = "SELECT * FROM personne WHERE nom = %s AND prenom = %s"
         self.cursor.execute(sql, (nom, prenom))
         result = self.cursor.fetchone()
         return result is not None
