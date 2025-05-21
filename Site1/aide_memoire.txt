@@ -1,0 +1,11 @@
+BUT:
+
+inverser le nouveau et le connexion
+
+
+TUTO FLASK:
+
+pour activer Flask: 
+-se mettre dans le fichier où il est présent
+-faire $env:FLASK_APP = "fonctionsbdd.py"
+-puis flask run

@@ -2,17 +2,17 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8"/> 
-    <title>Connexion effectuée</title>
+    <title>Connexion</title>
     <meta name="author" content="Ayyoub"/>
     <meta name="keywords" content="A COMPLETER"/>
 </head>
 <body>
-    <h1>✔ Félicitations vous vous êtes créer un compte !!! Données insérées avec succès !!!  </h1>
-    <p>Vous allez être redirigé...</p>
+    <h1>❌Vous n'avez pas de compte !! Cliquez sur Nouveau pour en créer un ❌</h1>
     <script>
         setTimeout(function () {
             window.location.href = "{{ url_for('login_page') }}";
         }, 2000);  // redirige après 2 secondes
     </script>
+
 </body>
 </html>
