@@ -1,0 +1,34 @@
+pip install pandas openpyxl sqlalchemy pymysql
+ 
+import pandas as pd
+
+from sqlalchemy import create_engine
+ 
+# 1. Lire le fichier Excel
+
+df = pd.read_excel("mon_fichier.xlsx", sheet_name="Feuil1")  # Remplace par ton fichier réel
+ 
+# 2. Créer l'URL de connexion MySQL
+
+user = "ton_utilisateur"
+
+password = "ton_mot_de_passe"
+
+host = "localhost"  # ou IP du serveur MySQL
+
+port = 3306  # par défaut
+
+database = "nom_de_ta_base"
+ 
+# Connexion à MySQL avec SQLAlchemy + pymysql
+
+engine = create_engine(f"mysql+pymysql://{user}:{password}@{host}:{port}/{database}")
+ 
+# 3. Insérer dans une table
+
+df.to_sql("nom_de_ta_table", con=engine, if_exists="replace", index=False)
+ 
+print("Importation terminée avec succès !")
+ 
+connection à Mysql en Python
+ 

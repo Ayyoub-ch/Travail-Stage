@@ -1,12 +1,15 @@
+import pandas as pd
+
 import mysql.connector
+
 from flask import Flask, request, render_template
 
 app = Flask(__name__)
 
 
 
-#Classe Connexion
-class Connexion:
+#Classe Matrice
+class Matrice:
     def __init__(self, host='localhost', user='root', password='', database='matrice',port=3306):
         self.conn = mysql.connector.connect(
             host=host,
@@ -43,65 +46,95 @@ class Connexion:
         self.conn.commit()
     
     def existe_dev(self, prenom, nom):
-        sql = "SELECT * FROM dev WHERE competence = %s AND acquis = %s"
+        sql = "SELECT * FROM dev WHERE nom = %s AND prenom = %s"
         self.cursor.execute(sql, (nom, prenom))
         result = self.cursor.fetchone()
         return result is not None
 
     #Partir Soft Skill
-    def insert_soft(self, competence, acquis):
-        sql = "INSERT INTO soft (competence, acquis) VALUES (%s, %s)"
-        self.cursor.execute(sql, (competence, acquis))
+    def insert_soft(self, competence2, acquis):
+        sql = "INSERT INTO soft (competence2, acquis) VALUES (%s, %s)"
+        self.cursor.execute(sql, (competence2, acquis))
         self.conn.commit()
 
     
-    def update_soft(self, nouvel_acquis, competence):
-        sql = "UPDATE soft SET acquis = %s WHERE competence = %s"
-        self.cursor.execute(sql, (nouvel_acquis, competence))
+    def update_soft(self, nouvel_acquis, competence2):
+        sql = "UPDATE soft SET acquis = %s WHERE competence2 = %s"
+        self.cursor.execute(sql, (nouvel_acquis, competence2))
         self.conn.commit()
     
 
     def lecture_soft(self):
-        self.cursor.execute("SELECT competence, acquis FROM soft")
+        self.cursor.execute("SELECT competence2, acquis FROM soft")
         return self.cursor.fetchall()
     
-    def delete_soft(self, competence, acquis):
-        sql = "DELETE FROM soft WHERE competence = %s AND acquis = %s"
-        self.cursor.execute(sql, (competence, acquis))
+    def delete_soft(self, competence2, acquis):
+        sql = "DELETE FROM soft WHERE competence2 = %s AND acquis = %s"
+        self.cursor.execute(sql, (competence2, acquis))
         self.conn.commit()
     
-    def existe_soft(self, competence, acquis):
-        sql = "SELECT * FROM soft WHERE competence = %s AND acquis = %s"
-        self.cursor.execute(sql, (competence, acquis))
+    def existe_soft(self, competence2, acquis):
+        sql = "SELECT * FROM soft WHERE competence2 = %s AND acquis = %s"
+        self.cursor.execute(sql, (competence2, acquis))
         result = self.cursor.fetchone()
         return result is not None
 
 
     #Partir Hard Skill
-    def insert_hard(self, competence, niveau):
-        sql = "INSERT INTO hard (competence, niveau) VALUES (%s, %s)"
-        self.cursor.execute(sql, (competence, niveau))
+    def insert_hard(self, competence1, niveau):
+        sql = "INSERT INTO hard (competence1, niveau) VALUES (%s, %s)"
+        self.cursor.execute(sql, (competence1, niveau))
         self.conn.commit()
 
     def update_hard(self, new_competence, niveau):
-        sql = "UPDATE hard SET niveau = %s WHERE competence = %s"
+        sql = "UPDATE hard SET niveau = %s WHERE competence1 = %s"
         self.cursor.execute(sql, (new_competence, niveau))
         self.conn.commit()
     
     def lecture_hard(self):
-        self.cursor.execute("SELECT competence, niveau FROM hard")
+        self.cursor.execute("SELECT competence1, niveau FROM hard")
         return self.cursor.fetchall()
 
-    def delete_hard(self, competence, niveau):
-        sql = "DELETE FROM hard WHERE competence = %s AND niveau = %s"
-        self.cursor.execute(sql, (competence, niveau))
+    def delete_hard(self, competence1, niveau):
+        sql = "DELETE FROM hard WHERE competence1 = %s AND niveau = %s"
+        self.cursor.execute(sql, (competence1, niveau))
         self.conn.commit()
 
-    def existe_hard(self, competence, niveau):
-        sql = "SELECT * FROM hard WHERE competence = %s AND niveau = %s"
-        self.cursor.execute(sql, (competence, niveau))
+    def existe_hard(self, competence1, niveau):
+        sql = "SELECT * FROM hard WHERE competence1 = %s AND niveau = %s"
+        self.cursor.execute(sql, (competence1, niveau))
         result = self.cursor.fetchone()
         return result is not None
     
 
     
+@app.route('/')
+def debut():
+    return render_template('tableau.html')
+
+# Insertion des données (POST)
+@app.route('/insert', methods=['POST'])
+def insert():
+    nom= request.form['nom']
+    prenom = request.form['prenom']
+    competence1 = request.form['competence1']
+    niveau = request.form['niveau']
+    competence2 = request.form['competence2']
+    acquis = request.form['acquis']
+
+    conn = Matrice()
+    conn.insert_soft(competence1, niveau)
+    conn.insert_hard(competence2, acquis)
+    conn.insert_dev(nom, prenom)
+
+    return render_template('tableau.html')
+
+
+
+
+
+# Point d'entrée principal
+if __name__ == '__main__':
+    # ⚠️ Ne pas appeler de méthode ici !
+    # ✅ On démarre juste l'application Flask
+    app.run(debug=True)

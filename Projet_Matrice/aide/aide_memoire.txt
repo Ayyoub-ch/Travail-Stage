@@ -11,6 +11,7 @@ BROUILLON:
 
 
 fonctions:
-insérer les données
-afficher les données
-faire un tableau OU placer les données
+
+insérer les données --> insert
+afficher les données--> affichage de données via html
+faire un tableau OU placer les données--> tableau dans le html puis mettre les données 

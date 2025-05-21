@@ -1,0 +1,48 @@
+Pour insérer des informations depuis un fichier Excel dans une base de données, 
+tu peux utiliser pandas (pour lire l'Excel) et une lib de base de données comme sqlite3, sqlalchemy, psycopg2, etc., 
+selon le SGBD que tu utilises.
+
+✅ Étapes générales :
+Lire le fichier Excel avec pandas.
+
+Se connecter à la base de données.
+
+Parcourir les lignes du fichier Excel.
+
+Insérer chaque ligne dans la base.
+
+🧪 Exemple complet avec SQLite + Pandas
+Supposons que tu as un Excel users.xlsx avec une feuille qui contient :
+
+| name  | email                                         |
+| ----- | --------------------------------------------- |
+| Alice | [alice@example.com](mailto:alice@example.com) |
+| Bob   | [bob@example.com](mailto:bob@example.com)     |
+
+
+import pandas as pd
+import sqlite3
+
+# 1. Charger l'Excel
+df = pd.read_excel('users.xlsx')  # ou pd.read_excel('users.xlsx', sheet_name='Feuille1')
+
+# 2. Connexion à la base SQLite (ou autre moteur)
+conn = sqlite3.connect('users_db.sqlite')
+cursor = conn.cursor()
+
+# 3. Créer la table si elle n'existe pas
+cursor.execute("""
+    CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT,
+        email TEXT
+    )
+""")
+
+# 4. Insérer les lignes du DataFrame
+for _, row in df.iterrows():
+    cursor.execute("INSERT INTO users (name, email) VALUES (?, ?)", (row['name'], row['email']))
+
+conn.commit()
+conn.close()
+
