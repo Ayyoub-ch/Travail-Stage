@@ -1,0 +1,16 @@
+Projet Matrice:
+
+But 1: faire un script python pouvant automatiser la tache de répertorier chaque employé et sa matrice de compétence
+
+But 1.5: mettre dans une base de données les compétences hard et soft de chaque entreprise 
+BUT 2: aller à l'intérieur du excel -->prendre les données --> les placer dans le tableau
+
+
+
+BROUILLON:
+
+
+fonctions:
+insérer les données
+afficher les données
+faire un tableau OU placer les données
