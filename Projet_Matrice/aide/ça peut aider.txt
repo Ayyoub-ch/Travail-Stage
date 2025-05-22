@@ -1,0 +1,10 @@
+
+# Dossier contenant les fichiers Excel
+dossier = "../../Downloads/Matrices de compétences Collaborateurs"
+
+# Parcourir tous les fichiers Excel du dossier
+for fichier in os.listdir(dossier):
+    if fichier.endswith(".xlsx") or fichier.endswith(".xls"):
+        chemin_fichier = os.path.join(dossier, fichier)
+
+        df = pd.read_excel("chemin_fichier.xlsx", sheet_name="Matrice Hard Skills")  # Remplace par ton fichier réel
