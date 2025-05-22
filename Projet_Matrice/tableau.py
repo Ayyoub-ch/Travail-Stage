@@ -28,12 +28,12 @@ class Matrice:
         self.cursor.execute(sql, (nom, prenom, poste))
         self.conn.commit()
 
-    def update_personne(self, new_prenom, nom, poste):
+    def update_personne_par_prenom(self, new_prenom, nom, poste):
         sql = "UPDATE personne SET nom = %s WHERE prenom = %s and poste = %s"
         self.cursor.execute(sql, (new_prenom, nom, poste))
         self.conn.commit()
     
-    def update_personne(self, new_nom, prenom):
+    def update_personne_par_nom(self, new_nom, prenom):
         sql = "UPDATE personne SET prenom = %s WHERE nom = %s"
         self.cursor.execute(sql, (new_nom, prenom))
         self.conn.commit()
@@ -56,13 +56,13 @@ class Matrice:
     #Partie Soft Skill
     def insert_soft(self, competence2):
         sql = "INSERT INTO soft (competence2) VALUES (%s)"
-        self.cursor.execute(sql, (competence2))
+        self.cursor.execute(sql, (competence2,))
         self.conn.commit()
 
     
-    def update_soft(self, new_competence2):
-        sql = "UPDATE soft SET new_competence2 = %s WHERE competence2 = %s"
-        self.cursor.execute(sql, (new_competence2))
+    def update_soft(self, old_competence2, new_competence2):
+        sql = "UPDATE soft SET competence2 = %s WHERE competence2 = %s"
+        self.cursor.execute(sql, (new_competence2, old_competence2))
         self.conn.commit()
     
 
@@ -72,12 +72,12 @@ class Matrice:
     
     def delete_soft(self, competence2):
         sql = "DELETE FROM soft WHERE competence2 = %s"
-        self.cursor.execute(sql, (competence2))
+        self.cursor.execute(sql, (competence2,))
         self.conn.commit()
     
     def existe_soft(self, competence2):
         sql = "SELECT * FROM soft WHERE competence2 = %s"
-        self.cursor.execute(sql, (competence2))
+        self.cursor.execute(sql, (competence2,))
         result = self.cursor.fetchone()
         return result is not None
 
@@ -88,10 +88,12 @@ class Matrice:
         self.cursor.execute(sql, (competence1, categorie))
         self.conn.commit()
 
-    def update_hard(self, new_competence, categorie):
+    def update_hard(self, competence1, new_categorie):
         sql = "UPDATE hard SET categorie = %s WHERE competence1 = %s"
-        self.cursor.execute(sql, (new_competence, categorie))
+        self.cursor.execute(sql, (new_categorie, competence1))
         self.conn.commit()
+
+
     
     def lecture_hard(self):
         self.cursor.execute("SELECT competence1, categorie FROM hard")
@@ -131,7 +133,7 @@ def insert():
 
     return render_template('tableau.html')
 
-# Importation des données depuis un fichier Excel
+# Importation des données depuis un fichier Excel spécifique
 @app.route('/import_excel', methods=['POST'])
 def import_excel():
     if 'file' not in request.files:
@@ -142,23 +144,26 @@ def import_excel():
         return "No selected file", 400
 
     if file:
-        df_personne = pd.read_excel(file, sheet_name='personne', engine='openpyxl')
-        df_hard = pd.read_excel(file, sheet_name='hard', engine='openpyxl')
-        df_soft = pd.read_excel(file, sheet_name='soft', engine='openpyxl')
+        # Lire les feuilles spécifiques du fichier Excel
+        df_soft = pd.read_excel(file, sheet_name="Matrice soft skills", engine='openpyxl')
+        df_hard = pd.read_excel(file, sheet_name="Matrice hard skills", engine='openpyxl')
 
+        # Insérer les données dans les tables correspondantes
         conn = Matrice()
-        conn.insert_from_dataframe(df_personne, 'personne')
-        conn.insert_from_dataframe(df_hard, 'hard')
-        conn.insert_from_dataframe(df_soft, 'soft')
+        conn.insert_from_dataframe(df_soft[['competence2']], 'soft')
+        conn.insert_from_dataframe(df_hard[['competence1', 'categorie']], 'hard')
 
         return "Data imported successfully", 200
-
-
-
+    
+@app.route('/check_data')
+def check_data():
+    conn = Matrice()
+    personnes = conn.lecture_personne()
+    hard_skills = conn.lecture_hard()
+    soft_skills = conn.lecture_soft()
+    return render_template('check_data.html', personnes=personnes, hard_skills=hard_skills, soft_skills=soft_skills)
 
 
 # Point d'entrée principal
 if __name__ == '__main__':
-    # ⚠️ Ne pas appeler de méthode ici !
-    # ✅ On démarre juste l'application Flask
     app.run(debug=True)

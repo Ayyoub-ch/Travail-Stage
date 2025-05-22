@@ -6,142 +6,122 @@
     <meta name="author" content="Ayyoub"/>
     <meta name="keywords" content="A COMPLETER"/>
     <style>
-body {
+        body {
             font-family: Arial, sans-serif;
             background-color: #f8f9fa;
             margin: 0;
             padding: 20px;
+            position: relative;
         }
-        .tables-container {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-        }
+
         h1 {
             text-align: center;
             color: #343a40;
         }
+
+        .main-container {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            position: relative;
+            max-width: 100%;
+        }
+
+        /* Table personnes toujours à gauche */
+        .personnes-container {
+            width: 300px;
+            margin-right: 40px;
+        }
+
+        /* Centrage absolu des skills au milieu de la page */
+        .skills-container {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 40px;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
         table {
             border-collapse: collapse;
-            margin: 20px;
             background-color: #fff;
             border: 2px solid #dee2e6;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            margin-top: 10px;
+            width: 100%;
         }
+
         th, td {
             border: 1px solid #dee2e6;
             padding: 10px;
             text-align: center;
         }
+
         th {
             background-color: #f2f2f2;
             color: #343a40;
         }
-        .highlight {
-            background-color: #f8f9fa;
-        }
-        .special {
-            background-color: #f0f0f0;
-        }
     </style>
 </head>
 <body>
-    <h1>Tableaux de Compétences  </h1>
-        <div class="tables-container">
-        <table>
-            <tr>
-                <th>Column 1</th>
-                <th>Column 2</th>
-            </tr>
-            <tr>
-                <td>Row 1, Cell 1</td>
-                <td>Row 1, Cell 2</td>
-            </tr>
-            <tr>
-                <td>Row 2, Cell 1</td>
-                <td>Row 2, Cell 2</td>
-            </tr>
-            <tr>
-                <td>Row 3, Cell 1</td>
-                <td>Row 3, Cell 2</td>
-            </tr>
-            <tr>
-                <td>Row 4, Cell 1</td>
-                <td>Row 4, Cell 2</td>
-            </tr>
-            <tr>
-                <td>Row 5, Cell 1</td>
-                <td>Row 5, Cell 2</td>
-            </tr>
-            <tr>
-                <td>Row 6, Cell 1</td>
-                <td>Row 6, Cell 2</td>
-            </tr>
-            <tr>
-                <td>Row 7, Cell 1</td>
-                <td>Row 7, Cell 2</td>
-            </tr>
-            <tr>
-                <td>Row 8, Cell 1</td>
-                <td>Row 8, Cell 2</td>
-            </tr>
-            <tr>
-                <td>Row 9, Cell 1</td>
-                <td>Row 9, Cell 2</td>
-            </tr>
-            <tr>
-                <td>Row 10, Cell 1</td>
-                <td>Row 10, Cell 2</td>
-            </tr>
-        </table>
+    <h1>Tableaux de Compétences</h1>
 
-        <table>
-            <tr>
-                <th>Column A</th>
-                <th>Column B</th>
-            </tr>
-            <tr>
-                <td>Row 1, Cell A</td>
-                <td>Row 1, Cell B</td>
-            </tr>
-            <tr>
-                <td>Row 2, Cell A</td>
-                <td>Row 2, Cell B</td>
-            </tr>
-            <tr>
-                <td>Row 3, Cell A</td>
-                <td>Row 3, Cell B</td>
-            </tr>
-            <tr>
-                <td>Row 4, Cell A</td>
-                <td>Row 4, Cell B</td>
-            </tr>
-            <tr>
-                <td>Row 5, Cell A</td>
-                <td>Row 5, Cell B</td>
-            </tr>
-            <tr>
-                <td>Row 6, Cell A</td>
-                <td>Row 6, Cell B</td>
-            </tr>
-            <tr>
-                <td>Row 7, Cell A</td>
-                <td>Row 7, Cell B</td>
-            </tr>
-            <tr>
-                <td>Row 8, Cell A</td>
-                <td>Row 8, Cell B</td>
-            </tr>
-            <tr>
-                <td>Row 9, Cell A</td>
-                <td>Row 9, Cell B</td>
-            </tr>
-            <tr>
-                <td>Row 10, Cell A</td>
-                <td>Row 10, Cell B</td>
-            </tr>
-        </table>
+    <div class="main-container">
+        <!-- Table personnes à gauche -->
+        <div class="personnes-container">
+            <h2>Personnes</h2>
+            <table>
+                <tr>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th>Poste</th>
+                </tr>
+                {% for personne in personnes %}
+                <tr>
+                    <td>{{ personne.nom }}</td>
+                    <td>{{ personne.prenom }}</td>
+                    <td>{{ personne.poste }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <!-- Tables soft et hard skills au centre -->
+        <div class="skills-container">
+            <div>
+                <h2>Hard Skills</h2>
+                <table>
+                    <tr>
+                        <th>Compétence</th>
+                        <th>Catégorie</th>
+                    </tr>
+                    {% for skill in hard_skills %}
+                    <tr>
+                        <td>{{ skill.competence1 }}</td>
+                        <td>{{ skill.categorie }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+
+            <div>
+                <h2>Soft Skills</h2>
+                <table>
+                    <tr>
+                        <th>Compétence</th>
+                    </tr>
+                    {% for skill in soft_skills %}
+                    <tr>
+                        <td>{{ skill.competence2 }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
     </div>
-
 </body>
 </html>
