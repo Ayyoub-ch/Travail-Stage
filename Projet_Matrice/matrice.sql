@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : mer. 21 mai 2025 à 14:51
+-- Généré le : jeu. 22 mai 2025 à 14:12
 -- Version du serveur : 9.1.0
 -- Version de PHP : 8.3.14
 
@@ -63,9 +63,9 @@ CREATE TABLE IF NOT EXISTS `personne` (
   `id` int NOT NULL AUTO_INCREMENT,
   `nom` varchar(12) NOT NULL,
   `prenom` varchar(12) NOT NULL,
-  `poste` varchar(12) NOT NULL,
+  `poste` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 

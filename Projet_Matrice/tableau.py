@@ -18,9 +18,9 @@ class Matrice:
         self.cursor = self.conn.cursor()
 
     # Méthode pour insérer des données depuis un DataFrame
-    def insert_from_dataframe(self, df, table_name):
-        engine = create_engine('mysql+pymysql://root:@localhost/matrice')
-        df.to_sql(table_name, engine, if_exists='append', index=False)
+   # def insert_from_dataframe(self, df, table_name):
+    #    engine = create_engine('mysql+pymysql://root:@localhost/matrice')
+    #    df.to_sql(table_name, engine, if_exists='append', index=False)
     
     #Partie Personne
     def insert_personne(self, nom, prenom, poste):

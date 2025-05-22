@@ -1,0 +1,7 @@
+/mon_projet/
+│
+├── app.py                    # <--- C'EST LUI QUE TU EXÉCUTES
+├── import_excel.py          # Pour charger les données Excel en BDD
+├── import_bdd_mysql.py      # Contient get_data() ou autre fonction utile
+├── /templates/
+│   └── tableaux.html        # Ton fichier HTML dynamique
