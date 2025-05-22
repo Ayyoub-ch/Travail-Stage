@@ -161,7 +161,13 @@ def check_data():
     personnes = conn.lecture_personne()
     hard_skills = conn.lecture_hard()
     soft_skills = conn.lecture_soft()
+
+    print("PERSONNES:", personnes)
+    print("HARD SKILLS:", hard_skills)
+    print("SOFT SKILLS:", soft_skills)
+
     return render_template('check_data.html', personnes=personnes, hard_skills=hard_skills, soft_skills=soft_skills)
+
 
 
 # Point d'entrée principal

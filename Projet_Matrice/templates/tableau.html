@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8"/> 
-    <title>Connexion</title>
+    <title>Tableaux de Compétences</title>
     <meta name="author" content="Ayyoub"/>
     <meta name="keywords" content="A COMPLETER"/>
     <style>
@@ -82,9 +82,10 @@
                 </tr>
                 {% for personne in personnes %}
                 <tr>
-                    <td>{{ personne.nom }}</td>
-                    <td>{{ personne.prenom }}</td>
-                    <td>{{ personne.poste }}</td>
+                    <td>{{ personne[0] }}</td>
+                    <td>{{ personne[1] }}</td>
+                    <td>{{ personne[2] }}</td>
+
                 </tr>
                 {% endfor %}
             </table>
