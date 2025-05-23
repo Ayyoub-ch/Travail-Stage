@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : jeu. 22 mai 2025 à 14:12
+-- Généré le : ven. 23 mai 2025 à 14:01
 -- Version du serveur : 9.1.0
 -- Version de PHP : 8.3.14
 
@@ -33,23 +33,36 @@ CREATE TABLE IF NOT EXISTS `hard` (
   `competence1` int NOT NULL,
   `categorie` varchar(50) NOT NULL,
   PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=358 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `niveau_hard`
+--
+
+DROP TABLE IF EXISTS `niveau_hard`;
+CREATE TABLE IF NOT EXISTS `niveau_hard` (
+  `id_personne` int NOT NULL,
+  `id_hard` int NOT NULL,
+  `niveau` int NOT NULL,
+  KEY `fk_hard` (`id_hard`),
+  KEY `id_personne` (`id_personne`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `matrice`
+-- Structure de la table `niveau_soft`
 --
 
-DROP TABLE IF EXISTS `matrice`;
-CREATE TABLE IF NOT EXISTS `matrice` (
+DROP TABLE IF EXISTS `niveau_soft`;
+CREATE TABLE IF NOT EXISTS `niveau_soft` (
   `id_personne` int NOT NULL,
   `id_soft` int NOT NULL,
-  `id_hard` int NOT NULL,
   `niveau` int NOT NULL,
-  KEY `fk_personne` (`id_personne`),
-  KEY `fk_soft` (`id_soft`),
-  KEY `fk_hard` (`id_hard`)
+  KEY `id_soft` (`id_soft`),
+  KEY `id_personne` (`id_personne`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -65,7 +78,14 @@ CREATE TABLE IF NOT EXISTS `personne` (
   `prenom` varchar(12) NOT NULL,
   `poste` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Déchargement des données de la table `personne`
+--
+
+INSERT INTO `personne` (`id`, `nom`, `prenom`, `poste`) VALUES
+(22, 'Morigny', 'Nicolas', 'Chef de projet');
 
 -- --------------------------------------------------------
 
@@ -78,7 +98,7 @@ CREATE TABLE IF NOT EXISTS `soft` (
   `id` int NOT NULL AUTO_INCREMENT,
   `competence2` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=289 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

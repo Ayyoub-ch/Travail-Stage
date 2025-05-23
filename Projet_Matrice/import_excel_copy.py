@@ -63,20 +63,36 @@ def lire_excel():
 
         # Lecture des compétences
         df_soft_data = pd.read_excel(excel_file, sheet_name=feuille_soft, skiprows=5)
-        df_hard = pd.read_excel(excel_file, sheet_name=feuille_hard)
+        df_hard = pd.read_excel(excel_file, sheet_name=feuille_hard, skiprows=5)
 
+        print(df_hard)
+        """ça sert à rien c'est juste de l'embrouille
         # Nettoyage et ajout des colonnes
         df_soft_data.rename(columns={df_soft_data.columns[0]: "Compétence"}, inplace=True)
         df_soft_data["Type"] = "Soft"
+
 
         if "Compétence" not in df_hard.columns:
             df_hard.rename(columns={df_hard.columns[0]: "Compétence"}, inplace=True)
         df_hard["Type"] = "Hard"
 
+        print(df_hard["Type"])
+
         # Fusion
         df_competences = pd.concat([df_hard, df_soft_data], ignore_index=True)
 
+        print(df_hard)
+
+        
         return df_personnes, df_competences
+        print(df_competences)
+        """
+        for i in df_hard.columns:
+            if df_hard.columns[i]=='Nan':
+                df_hard.columns[i].pop()
+            print(df_hard.columns[0:i])
+        
+    
 
     except Exception as e:
         print("❌ Erreur lors de la lecture du fichier Excel :", e)
@@ -133,11 +149,4 @@ def inserer_donnees(df_personnes, df_competences):
 
 # === Exécution principale ===
 if __name__ == "__main__":
-    df_personnes, df_competences = lire_excel()
-
-    if df_personnes is not None and df_competences is not None:
-        print("\n📋 Colonnes Personne :", df_personnes.columns.tolist())
-        print("📋 Colonnes Compétences :", df_competences.columns.tolist())
-        inserer_donnees(df_personnes, df_competences)
-    else:
-        print("❌ Aucune donnée insérée.")
+    lire_excel()

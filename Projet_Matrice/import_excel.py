@@ -62,21 +62,10 @@ def lire_excel():
         }])
 
         # Lecture des compétences
-        df_soft_data = pd.read_excel(excel_file, sheet_name=feuille_soft, skiprows=5)
-        df_hard = pd.read_excel(excel_file, sheet_name=feuille_hard)
+        df_soft_data = pd.read_excel(excel_file, sheet_name=feuille_soft, skiprows=6)
+        df_hard = pd.read_excel(excel_file, sheet_name=feuille_hard, skiprows=6)
 
-        # Nettoyage et ajout des colonnes
-        df_soft_data.rename(columns={df_soft_data.columns[0]: "Compétence"}, inplace=True)
-        df_soft_data["Type"] = "Soft"
-
-        if "Compétence" not in df_hard.columns:
-            df_hard.rename(columns={df_hard.columns[0]: "Compétence"}, inplace=True)
-        df_hard["Type"] = "Hard"
-
-        # Fusion
-        df_competences = pd.concat([df_hard, df_soft_data], ignore_index=True)
-
-        return df_personnes, df_competences
+        print(df_soft_data)
 
     except Exception as e:
         print("❌ Erreur lors de la lecture du fichier Excel :", e)
