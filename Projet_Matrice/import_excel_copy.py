@@ -65,7 +65,12 @@ def lire_excel():
         df_soft_data = pd.read_excel(excel_file, sheet_name=feuille_soft, skiprows=5)
         df_hard = pd.read_excel(excel_file, sheet_name=feuille_hard, skiprows=5)
 
-        print(df_hard)
+        # Supprimer les lignes contenant des NaN dans les deux DataFrames
+        df_soft_data_clean = df_soft_data.dropna(how='all')  # Supprime les lignes où toutes les valeurs sont NaN
+        df_hard_clean = df_hard.dropna(how='all')
+
+        print(df_soft_data_clean)
+        print(df_hard_clean)
         """ça sert à rien c'est juste de l'embrouille
         # Nettoyage et ajout des colonnes
         df_soft_data.rename(columns={df_soft_data.columns[0]: "Compétence"}, inplace=True)
@@ -99,8 +104,8 @@ def lire_excel():
         return None, None
 
 # === Insertion dans la base ===
-def inserer_donnees(df_personnes, df_competences):
-    if df_personnes is None or df_competences is None:
+def inserer_donnees(df_personnes, df_soft_data_clean, df_hard_clean):
+    if df_personnes is None or df_soft_data_clean is None or df_hard_clean is None:
         print("❌ Données non valides.")
         return
 
