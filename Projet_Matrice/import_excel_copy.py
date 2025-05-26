@@ -94,6 +94,11 @@ def inserer_donnees(df_personnes, df_soft_data_clean, df_hard_clean, df_soft_lev
         print("❌ Données non valides.")
         return
 
+    print("📊 Aperçu données SOFT :")
+    print(df_soft_data_clean.head())
+    print("📊 Aperçu données HARD :")
+    print(df_hard_clean.head())
+    
     conn = connexion_mysql()
     cursor = conn.cursor()
 
@@ -120,25 +125,28 @@ def inserer_donnees(df_personnes, df_soft_data_clean, df_hard_clean, df_soft_lev
             )
 
         # Insertion des compétences soft
-        for _, row in df_soft_level.iterrows():
+        for _, row in df_soft_data_clean.iterrows():
             cursor.execute(
                 "INSERT INTO soft (competence2) VALUES (%s)",
-                (row["Compétence"])
+                (row["Compétence"],)
             )
         
         # Insertion des niveaux hard
         for _, row in df_hard_level.iterrows():
             cursor.execute(
-                "INSERT INTO niveau_hard (niveau) VALUES (%s, %s)",
-                (row["Niveau"])
+                "INSERT INTO niveau_hard (niveau) VALUES (%s)",
+                (row["Niveau"],)
             )
 
         # Insertion des niveaux soft
-        for _, row in df_hard_clean.iterrows():
+        for _, row in df_soft_level.iterrows():
             cursor.execute(
                 "INSERT INTO niveau_soft (niveau) VALUES (%s)",
-                (row["Niveau"])
+                (row["Niveau"],)
             )
+        print(df_soft_data_clean.head())
+        print(df_hard_clean.head())
+
 
 
         conn.commit()
