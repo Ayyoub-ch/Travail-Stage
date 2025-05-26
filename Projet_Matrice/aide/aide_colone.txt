@@ -1,0 +1,29 @@
+✅ Solution directe avec l’indice de colonne (3e colonne = indice 2)
+
+# Charger uniquement la 3e colonne après la 6e ligne
+df_soft_level = pd.read_excel(excel_file, sheet_name=feuille_soft, skiprows=6, usecols=[2])
+
+De même pour df_hard_level :
+
+df_hard_level = pd.read_excel(excel_file, sheet_name=feuille_hard, skiprows=6, usecols=[2])
+
+usecols=[2] signifie que Pandas va charger uniquement la colonne à l’indice 2, 
+c’est-à-dire la 3e colonne (puisque les indices commencent à 0).
+
+🔍 Pour accéder à la 3e colonne après lecture complète :
+
+Si vous lisez toutes les colonnes mais que vous ne voulez manipuler que la 3e 
+
+colonne_trois_soft = df_soft_level.iloc[:, 2]  # 3e colonne
+colonne_trois_hard = df_hard_level.iloc[:, 2]  # 3e colonne
+
+ Si vous préférez utiliser le nom de la colonne (par exemple "Compétence") :
+
+D’abord, affichez les noms de colonnes pour savoir comment elle s'appelle :
+
+print(df_soft_level.columns)
+
+Ensuite :
+
+colonne_soft = df_soft_level["NomDeLaColonne"]
+

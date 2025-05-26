@@ -29,7 +29,19 @@ def get_data():
             {"competence2": row[0]} for row in cursor.fetchall()
         ]
 
-        return personnes, hard_skills, soft_skills
+        # Niveaux Hard (exemple: id_personne, id_hard, niveau)
+        cursor.execute("SELECT id_personne, id_hard, niveau FROM niveau_hard")
+        niveaux_hard = [
+            {"id_personne": row[0], "id_hard": row[1], "niveau": row[2]} for row in cursor.fetchall()
+        ]
+
+        # Niveaux Soft (exemple: id_personne, id_soft, niveau)
+        cursor.execute("SELECT id_personne, id_soft, niveau FROM niveau_soft")
+        niveaux_soft = [
+            {"id_personne": row[0], "id_soft": row[1], "niveau": row[2]} for row in cursor.fetchall()
+        ]
+
+        return personnes, hard_skills, soft_skills, niveaux_hard, niveaux_soft
 
     finally:
         conn.close()

@@ -11,7 +11,6 @@
             background-color: #f8f9fa;
             margin: 0;
             padding: 20px;
-            position: relative;
         }
 
         h1 {
@@ -23,23 +22,23 @@
             display: flex;
             flex-direction: row;
             align-items: flex-start;
-            position: relative;
-            max-width: 100%;
+            gap: 40px;
         }
 
-        /* Table personnes toujours à gauche */
         .personnes-container {
             width: 300px;
-            margin-right: 40px;
         }
 
-        /* Centrage absolu des skills au milieu de la page */
         .skills-container {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
             display: flex;
+            flex-direction: row;
             gap: 40px;
+        }
+
+        .skill-block {
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
         }
 
         h2 {
@@ -65,8 +64,6 @@
             background-color: #f2f2f2;
             color: #343a40;
         }
-        /*barre de recherche */
-        
     </style>
 </head>
 <body>
@@ -87,42 +84,81 @@
                     <td>{{ personne[0] }}</td>
                     <td>{{ personne[1] }}</td>
                     <td>{{ personne[2] }}</td>
-
                 </tr>
                 {% endfor %}
             </table>
         </div>
 
-        <!-- Tables soft et hard skills au centre -->
+        <!-- Tables skills au centre -->
         <div class="skills-container">
-            <div>
-                <h2>Hard Skills</h2>
-                <table>
-                    <tr>
-                        <th>Compétence</th>
-                        <th>Catégorie</th>
-                    </tr>
-                    {% for skill in hard_skills %}
-                    <tr>
-                        <td>{{ skill.competence1 }}</td>
-                        <td>{{ skill.categorie }}</td>
-                    </tr>
-                    {% endfor %}
-                </table>
+            <!-- Hard Skills -->
+            <div class="skill-block">
+                <div>
+                    <h2>Hard Skills</h2>
+                    <table>
+                        <tr>
+                            <th>Compétence</th>
+                            <th>Catégorie</th>
+                        </tr>
+                        {% for skill in hard_skills %}
+                        <tr>
+                            <td>{{ skill.competence1 }}</td>
+                            <td>{{ skill.categorie }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                <div>
+                    <h2>Niveaux Hard</h2>
+                    <table>
+                        <tr>
+                            <th>ID Personne</th>
+                            <th>ID Hard</th>
+                            <th>Niveau</th>
+                        </tr>
+                        {% for niveau in niveaux_hard %}
+                        <tr>
+                            <td>{{ niveau.id_personne }}</td>
+                            <td>{{ niveau.id_hard }}</td>
+                            <td>{{ niveau.niveau }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
             </div>
 
-            <div>
-                <h2>Soft Skills</h2>
-                <table>
-                    <tr>
-                        <th>Compétence</th>
-                    </tr>
-                    {% for skill in soft_skills %}
-                    <tr>
-                        <td>{{ skill.competence2 }}</td>
-                    </tr>
-                    {% endfor %}
-                </table>
+            <!-- Soft Skills -->
+            <div class="skill-block">
+                <div>
+                    <h2>Soft Skills</h2>
+                    <table>
+                        <tr>
+                            <th>Compétence</th>
+                        </tr>
+                        {% for skill in soft_skills %}
+                        <tr>
+                            <td>{{ skill.competence2 }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                <div>
+                    <h2>Niveaux Soft</h2>
+                    <table>
+                        <tr>
+                            <th>ID Personne</th>
+                            <th>ID Soft</th>
+                            <th>Niveau</th>
+                        </tr>
+                        {% for niveau in niveaux_soft %}
+                        <tr>
+                            <td>{{ niveau.id_personne }}</td>
+                            <td>{{ niveau.id_soft }}</td>
+                            <td>{{ niveau.niveau }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
             </div>
         </div>
     </div>

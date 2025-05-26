@@ -65,15 +65,25 @@ def lire_excel():
         df_soft_data = pd.read_excel(excel_file, sheet_name=feuille_soft, skiprows=6)
         df_hard = pd.read_excel(excel_file, sheet_name=feuille_hard, skiprows=6)
 
-        print(df_soft_data)
+        # Supprimer les lignes contenant des NaN dans les deux DataFrames
+        df_soft_data_clean = df_soft_data.dropna(how='all')  # Supprime les lignes où toutes les valeurs sont NaN
+        df_hard_clean = df_hard.dropna(how='all')
+
+        # Lecture des niveaux
+        df_soft_level = pd.read_excel(excel_file, sheet_name=feuille_soft, skiprows=6, usecols=[1])
+        df_hard_level = pd.read_excel(excel_file, sheet_name=feuille_hard, skiprows=6, usecols=[2])
+
+        return df_personnes, df_soft_data_clean, df_hard_clean, df_soft_level, df_hard_level
+
+    
 
     except Exception as e:
         print("❌ Erreur lors de la lecture du fichier Excel :", e)
-        return None, None
+        return None, None, None, None, None
 
 # === Insertion dans la base ===
-def inserer_donnees(df_personnes, df_competences):
-    if df_personnes is None or df_competences is None:
+def inserer_donnees(df_personnes, df_soft_data_clean, df_hard_clean, df_soft_level, df_hard_level):
+    if None in (df_personnes, df_soft_data_clean, df_hard_clean, df_soft_level, df_hard_level):
         print("❌ Données non valides.")
         return
 
@@ -94,21 +104,36 @@ def inserer_donnees(df_personnes, df_competences):
             )
 
         # Insertion des compétences
-        df_hard = df_competences[df_competences["Type"] == "Hard"]
-        for _, row in df_hard.iterrows():
-            if "Compétence" in row and "Catégorie" in row:
-                cursor.execute(
-                    "INSERT INTO hard (competence1, categorie) VALUES (%s, %s)",
-                    (row["Compétence"], row["Catégorie"])
-                )
 
-        df_soft = df_competences[df_competences["Type"] == "Soft"]
-        for _, row in df_soft.iterrows():
-            if "Compétence" in row:
-                cursor.execute(
-                    "INSERT INTO soft (competence2) VALUES (%s)",
-                    (row["Compétence"],)
-                )
+        # Insertion des compétences hard
+        for _, row in df_hard_clean.iterrows():
+            cursor.execute(
+                "INSERT INTO hard (competence1, categorie) VALUES (%s, %s)",
+                (row["Compétence"], row["Catégorie"])
+            )
+
+        # Insertion des compétences soft
+        for _, row in df_soft_level.iterrows():
+            cursor.execute(
+                "INSERT INTO soft (competence2) VALUES (%s)",
+                (row["Compétence"],)
+            )
+        
+        # Insertion des niveaux hard
+        for _, row in df_hard_level.iterrows():
+
+            cursor.execute(
+                "INSERT INTO niveau_hard (niveau) VALUES (%s, %s)",
+                (row["Niveau"],)
+            )
+
+        # Insertion des niveaux soft
+        for _, row in df_hard_clean.iterrows():
+            cursor.execute(
+                "INSERT INTO niveau_soft (niveau) VALUES (%s)",
+                (row["Niveau"],)
+            )
+
 
         conn.commit()
         print("✅ Données insérées avec succès.")
@@ -120,13 +145,21 @@ def inserer_donnees(df_personnes, df_competences):
     finally:
         conn.close()
 
+
 # === Exécution principale ===
 if __name__ == "__main__":
-    df_personnes, df_competences = lire_excel()
+    result = lire_excel()
 
-    if df_personnes is not None and df_competences is not None:
+    if result is not None and len(result) == 5 and not any(r is None for r in result):
+        df_personnes, df_soft_data_clean, df_hard_clean, df_soft_level, df_hard_level = result
+
         print("\n📋 Colonnes Personne :", df_personnes.columns.tolist())
-        print("📋 Colonnes Compétences :", df_competences.columns.tolist())
-        inserer_donnees(df_personnes, df_competences)
+        print("📋 Colonnes Soft :", df_soft_data_clean.columns.tolist())
+        print("📋 Colonnes Hard :", df_hard_clean.columns.tolist())
+        print("📋 Niveaux Soft :", df_soft_level.columns.tolist())
+        print("📋 Niveaux Hard :", df_hard_level.columns.tolist())
+
+        inserer_donnees(df_personnes, df_soft_data_clean, df_hard_clean, df_soft_level, df_hard_level)
     else:
         print("❌ Aucune donnée insérée.")
+
