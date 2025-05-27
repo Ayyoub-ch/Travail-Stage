@@ -30,9 +30,9 @@ def get_data():
         ]
 
         # Niveaux Hard (exemple: id_personne, id_hard, niveau)
-        cursor.execute("SELECT id_personne, id_hard, niveau FROM niveau_hard")
+        cursor.execute("SELECT id_personne, id_hard FROM niveau_hard")
         niveaux_hard = [
-            {"id_personne": row[0], "id_hard": row[1], "niveau": row[2]} for row in cursor.fetchall()
+            {"id_personne": row[0], "id_hard": row[1]} for row in cursor.fetchall()
         ]
 
         # Niveaux Soft (exemple: id_personne, id_soft, niveau)

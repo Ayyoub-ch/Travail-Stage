@@ -99,11 +99,13 @@
                         <tr>
                             <th>Compétence</th>
                             <th>Catégorie</th>
+                            <th>Niveau</th>
                         </tr>
                         {% for skill in hard_skills %}
                         <tr>
                             <td>{{ skill.competence1 }}</td>
                             <td>{{ skill.categorie }}</td>
+                            <td>{{ skill.niveau_hard}}</td>
                         </tr>
                         {% endfor %}
                     </table>
@@ -114,46 +116,11 @@
                         <tr>
                             <th>ID Personne</th>
                             <th>ID Hard</th>
-                            <th>Niveau</th>
                         </tr>
                         {% for niveau in niveaux_hard %}
                         <tr>
                             <td>{{ niveau.id_personne }}</td>
                             <td>{{ niveau.id_hard }}</td>
-                            <td>{{ niveau.niveau }}</td>
-                        </tr>
-                        {% endfor %}
-                    </table>
-                </div>
-            </div>
-
-            <!-- Soft Skills -->
-            <div class="skill-block">
-                <div>
-                    <h2>Soft Skills</h2>
-                    <table>
-                        <tr>
-                            <th>Compétence</th>
-                        </tr>
-                        {% for skill in soft_skills %}
-                        <tr>
-                            <td>{{ skill.competence2 }}</td>
-                        </tr>
-                        {% endfor %}
-                    </table>
-                </div>
-                <div>
-                    <h2>Niveaux Soft</h2>
-                    <table>
-                        <tr>
-                            <th>ID Personne</th>
-                            <th>ID Soft</th>
-                            <th>Niveau</th>
-                        </tr>
-                        {% for niveau in niveaux_soft %}
-                        <tr>
-                            <td>{{ niveau.id_personne }}</td>
-                            <td>{{ niveau.id_soft }}</td>
                             <td>{{ niveau.niveau }}</td>
                         </tr>
                         {% endfor %}
