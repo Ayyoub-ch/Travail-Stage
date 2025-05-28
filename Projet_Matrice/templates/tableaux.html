@@ -105,7 +105,7 @@
                         <tr>
                             <td>{{ skill.competence1 }}</td>
                             <td>{{ skill.categorie }}</td>
-                            <td>{{ skill.niveau_hard}}</td>
+                            <td>{{ skill.niveau }}</td> 
                         </tr>
                         {% endfor %}
                     </table>
@@ -120,8 +120,7 @@
                         {% for niveau in niveaux_hard %}
                         <tr>
                             <td>{{ niveau.id_personne }}</td>
-                            <td>{{ niveau.id_hard }}</td>
-                            <td>{{ niveau.niveau }}</td>
+                            <td>{{ niveau.id_hard }}</td>                        
                         </tr>
                         {% endfor %}
                     </table>

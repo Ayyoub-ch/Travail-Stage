@@ -107,6 +107,9 @@ def inserer_donnees(df_personnes, df_soft_data_clean, df_hard_clean, df_soft_lev
                 "INSERT INTO personne (nom, prenom, poste) VALUES (%s, %s, %s)",
                 (row["Nom"], row["Prénom"], row["Poste"])
             )
+        cursor.execute("SELECT id FROM personne WHERE nom = %s AND prenom = %s", (row["Nom"], row["Prénom"]))
+        IdPrenom = cursor.fetchall()[0][0]
+        print(IdPrenom)
 
         # Insertion des compétences
 
@@ -116,6 +119,17 @@ def inserer_donnees(df_personnes, df_soft_data_clean, df_hard_clean, df_soft_lev
                 "INSERT INTO hard (competence1, categorie) VALUES (%s, %s)",
                 (row["Hard Skills / outils"], row["Catégorie"])
             )
+            cursor.execute("select id from hard WHERE competence1= %s", (row["Hard Skills / outils"],))
+            Id_Hard = cursor.fetchall()[0][0]
+            print(Id_Hard)
+
+            if row["Niveau"]> 0:
+                cursor.execute(
+                "INSERT INTO niveau_hard (id_personne, id_hard, niveau) VALUES (%s, %s, %s)",
+                (IdPrenom, Id_Hard, row["Niveau"])
+                )
+                result=cursor.fetchall()
+                print(result)
 
         # Insertion des compétences soft
         for _, row in df_soft_data_clean.iterrows():
@@ -129,11 +143,11 @@ def inserer_donnees(df_personnes, df_soft_data_clean, df_hard_clean, df_soft_lev
         # Insertion des niveaux
 
         # Insertion des niveaux hard
-        for _, row in df_hard_level.iterrows():
-            cursor.execute(
-                "INSERT INTO niveau_hard (niveau) VALUES (%s)",
-                (row["Niveau"],)
-            )
+        id_hard,id_personne
+        cursor.execute(
+            "INSERT INTO niveau_hard (id_hard,id_personne,niveau) VALUES (%s,%s, %s)",
+            (id_hard,id_personne,row["Niveau"])
+        )
 
         # Insertion des niveaux soft
         for _, row in df_soft_level.iterrows():
