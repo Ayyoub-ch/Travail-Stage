@@ -14,9 +14,9 @@ mar 21 mai 24;Début d’un premier site en utilisant Flask et une base de données 
 mer 22 mai 24;Début du projet sur les Matrices de Compétences;Utilisation de plusieurs tables et les relier au code ;;;
 jeu 23 mai 24;Poursuite du Projet sur les Matrices de Compétences;La récupération des données d'un fichier Excel pour les distribuer à plusieurs tables ;;;
 ven 24 mai 24;;;;;
-lun 27 mai 24;;;;;
-mar 28 mai 24;;;;;
-mer 29 mai 24;;;;;
+lun 27 mai 24;Avancée sur le projet Matrices de Compétences: affichage du tableau hard skill et identité ;difficultés à afficher les soft skill;;;
+mar 28 mai 24;Tentative d'affichage des deux tableaux tout en gardant les données intacts;difficultés à afficher les soft skill et les hard skills, tout en gardant les informations;;;
+mer 29 mai 24;création de l'interface pour pouvoir afficher et insérer plus facilement les données et affichage des tableaux faits;afficher simultanément les soft skills et hard skills;;;
 jeu 30 mai 24;;;;;
 ven 31 mai 24;;;;;
 lun 3 juin 24;;;;;
