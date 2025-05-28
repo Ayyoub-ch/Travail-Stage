@@ -19,33 +19,25 @@ def get_data():
         id_personne=personnes[0][3]
 
         # Hard Skills
-        cursor.execute("""SELECT competence1, categorie, niveau FROM hard
-                       JOIN niveau_hard ON niveau 
-                       WHERE hard.id=niveau_hard.id_hard 
-                       AND niveau_hard.id_personne=(SELECT id FROM personne WHERE id=%s)""", (id_personne,))
+        cursor.execute("""SELECT hard.competence1, hard.categorie, niveau_hard.niveau
+                        FROM hard
+                        JOIN niveau_hard ON hard.id = niveau_hard.id_hard
+                        WHERE niveau_hard.id_personne = %s""", (id_personne,))
         hard_skills = [
             {"competence1": row[0], "categorie": row[1], "niveau": row[2]} for row in cursor.fetchall()
         ]
 
         # Soft Skills
-        cursor.execute("SELECT competence2 FROM soft")
+        cursor.execute("""SELECT soft.competence2, niveau_soft.niveau
+                        FROM soft
+                        JOIN niveau_soft ON soft.id = niveau_soft.id_soft
+                        WHERE niveau_soft.id_personne = (SELECT id FROM personne WHERE id = %s)""", (id_personne,))
         soft_skills = [
-            {"competence2": row[0]} for row in cursor.fetchall()
+            {"competence2": row[0], "niveau": row[1]} for row in cursor.fetchall()
         ]
 
-        # Niveaux Hard (exemple: id_personne, id_hard, niveau)
-        cursor.execute("SELECT id_personne, id_hard , niveau FROM niveau_hard")
-        niveaux_hard = [
-            {"id_personne": row[0], "id_hard": row[1]} for row in cursor.fetchall()
-        ]
-
-        # Niveaux Soft (exemple: id_personne, id_soft, niveau)
-        cursor.execute("SELECT id_personne, id_soft, niveau FROM niveau_soft")
-        niveaux_soft = [
-            {"id_personne": row[0], "id_soft": row[1], "niveau": row[2]} for row in cursor.fetchall()
-        ]
-
-        return personnes, hard_skills, soft_skills, niveaux_hard, niveaux_soft
+        
+        return personnes, hard_skills, soft_skills
 
     finally:
         conn.close()

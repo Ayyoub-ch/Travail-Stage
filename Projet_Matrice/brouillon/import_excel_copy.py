@@ -62,14 +62,14 @@ def lire_excel():
         }])
 
         # Lecture des compétences
-        df_soft_data = pd.read_excel(excel_file, sheet_name=feuille_soft, skiprows=6, header=0)
-        df_hard = pd.read_excel(excel_file, sheet_name=feuille_hard, skiprows=5, header=0)
+        df_soft_data = pd.read_excel(excel_file, sheet_name=feuille_soft, skiprows=5, header=0)
+        df_hard_data = pd.read_excel(excel_file, sheet_name=feuille_hard, skiprows=5, header=0)
 
         #si on change 5 par 6 la colonne hard skill sera vide car dans insertion_donnees on vérifie les titres de colonnes du Excel voir plus bas
 
         # Supprimer les lignes contenant des NaN dans les deux DataFrames
         df_soft_data_clean = df_soft_data.dropna(how='all')  # Supprime les lignes où toutes les valeurs sont NaN
-        df_hard_clean = df_hard.dropna(how='all')
+        df_hard_clean = df_hard_data.dropna(how='all')
 
 
         # Lecture des niveaux
@@ -108,11 +108,12 @@ def inserer_donnees(df_personnes, df_soft_data_clean, df_hard_clean, df_soft_lev
                 (row["Nom"], row["Prénom"], row["Poste"])
             )
         cursor.execute("SELECT id FROM personne WHERE nom = %s AND prenom = %s", (row["Nom"], row["Prénom"]))
-        IdPrenom = cursor.fetchall()[0][0]
+        IdPrenom = cursor.fetchone()[0]
         print(IdPrenom)
 
         # Insertion des compétences
-
+    
+        
         # Insertion des compétences hard
         for _, row in df_hard_clean.iterrows():
             cursor.execute(
@@ -120,7 +121,7 @@ def inserer_donnees(df_personnes, df_soft_data_clean, df_hard_clean, df_soft_lev
                 (row["Hard Skills / outils"], row["Catégorie"])
             )
             cursor.execute("select id from hard WHERE competence1= %s", (row["Hard Skills / outils"],))
-            Id_Hard = cursor.fetchall()[0][0]
+            Id_Hard = cursor.fetchone()[0]
             print(Id_Hard)
 
             if row["Niveau"]> 0:
@@ -128,42 +129,42 @@ def inserer_donnees(df_personnes, df_soft_data_clean, df_hard_clean, df_soft_lev
                 "INSERT INTO niveau_hard (id_personne, id_hard, niveau) VALUES (%s, %s, %s)",
                 (IdPrenom, Id_Hard, row["Niveau"])
                 )
-                result=cursor.fetchall()
-                print(result)
-
+        conn.commit() 
+        
+        cursor.fetchall()
+        
         # Insertion des compétences soft
         for _, row in df_soft_data_clean.iterrows():
+            # Insertion de la soft skill dans la table `soft`
             cursor.execute(
                 "INSERT INTO soft (competence2) VALUES (%s)",
                 (row["Soft Skills"],)
             )
-        
+            
+            # Récupération de l'ID de la soft skill insérée
+            cursor.execute("SELECT id FROM soft WHERE competence2 = %s", (row["Soft Skills"],))
+            id_soft = cursor.fetchone()[0]
+            print(id_soft)
 
-
-        # Insertion des niveaux
-
-        # Insertion des niveaux hard
-        id_hard,id_personne
-        cursor.execute(
-            "INSERT INTO niveau_hard (id_hard,id_personne,niveau) VALUES (%s,%s, %s)",
-            (id_hard,id_personne,row["Niveau"])
-        )
-
-        # Insertion des niveaux soft
-        for _, row in df_soft_level.iterrows():
+            
+            # Insertion dans `niveau_soft` si le niveau est supérieur à 0
             cursor.execute(
-                "INSERT INTO niveau_soft (niveau) VALUES (%s)",
-                (row["Niveau"],)
+                "INSERT INTO niveau_soft (id_personne, id_soft, niveau) VALUES (%s, %s, %s)",
+                (IdPrenom, id_soft, row["."])
             )
-        print(df_soft_data_clean.head())
-        print(df_hard_clean.head())    
+        conn.commit() 
+            
+
+                
+    
+
 
 
         conn.commit()
         print("✅ Données insérées avec succès.")
 
     except Exception as e:
-        conn.rollback()
+        #conn.rollback()
         print("❌ Erreur lors de l'insertion :", e)
 
     finally:

@@ -1,0 +1,2 @@
+ALTER TABLE ta_table AUTO_INCREMENT=0
+ 

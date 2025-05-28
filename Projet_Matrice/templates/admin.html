@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8"/> 
+    <title>Page d'administration</title>
+    <meta name="author" content="Ayyoub"/>
+    <meta name="keywords" content="A COMPLETER"/>
+</head> <!-- Tu avais oublié de fermer la balise head -->
+<body>
+
+    <h1>Interface d'administration</h1>
+
+    <!-- Formulaire pour importer les matrices -->
+    <form action="{{ url_for('importer_matrice') }}" method="post">
+        <button type="submit">Importer les matrices</button>
+    </form>
+
+    <!-- Formulaire pour voir les compétences -->
+    <form action="{{ url_for('voir_comp') }}" method="post">
+        <button type="submit">Voir les compétences</button>
+    </form>
+
+</body>
+</html>
