@@ -2,6 +2,19 @@
 
 import mysql.connector
 
+def get_personn():
+    conn = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="matrice"
+    )
+    cursor = conn.cursor()
+    cursor.execute("SELECT nom, prenom, id FROM personne")
+    personne = cursor.fetchall()
+    conn.close() 
+    return personne
+
 def get_data():
     conn = mysql.connector.connect(
         host="localhost",
@@ -49,3 +62,21 @@ def get_data():
 
     finally:
         conn.close()
+
+def recherche():
+    conn = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="matrice"
+    )
+    cursor = conn.cursor()
+    cursor.execute("""SELECT hard.competence1, hard.categorie, niveau_hard.niveau
+                        FROM hard
+                        JOIN niveau_hard ON hard.id = niveau_hard.id_hard
+                        JOIN personne ON niveau_hard.id_personne = personne.id
+                        WHERE personne.nom = %s""")
+    personne = cursor.fetchall()
+    conn.close() 
+    return personne
+

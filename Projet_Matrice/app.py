@@ -1,5 +1,5 @@
 from flask import Flask, render_template, abort, redirect, url_for, request
-from import_bdd_mysql import get_data
+from import_bdd_mysql import get_data, get_personn, recherche
 import import_excel_all
 
 app = Flask(__name__)
@@ -7,8 +7,9 @@ app = Flask(__name__)
 @app.route("/")
 def index():
     try:
+        personne=get_personn()
         return render_template(
-            "admin.html"
+            "admin.html",personne=personne
         )
     except Exception as e:
         app.logger.error(f"An error occurred: {e}")
@@ -41,6 +42,14 @@ def voir_comp():
 @app.route('/retour', methods=['POST'])
 def retour():
     return render_template("admin.html")
+
+
+@app.route('/rechercher', methods=['POST'])
+def rechercher():
+    recherche = recherche()
+    return render_template(
+            "recherche.html",
+            recherche=recherche)
 
 if __name__ == "__main__":
     app.run(debug=True)

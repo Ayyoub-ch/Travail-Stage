@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8"/> 
-    <title>Tableaux de Compétences</title>
+    <title>Résultat de la Recherche</title>
     <meta name="author" content="Ayyoub"/>
     <meta name="keywords" content="A COMPLETER"/>
     <style>
@@ -10,8 +10,18 @@
             font-family: Arial, sans-serif;
             background-color: #f8f9fa;
             margin: 0;
-            padding: 20px;
+            padding: 20px;text-align: center;
         }
+        
+        .titre-nom {
+            text-align: center;
+            font-size: 32px;
+            font-weight: bold;
+            color: #212529;
+            margin: 30px 0 10px 0;
+        }
+
+
 
         h1 {
             text-align: center;
@@ -130,17 +140,15 @@
     <div class="main-container">
         <!-- Table personnes à gauche -->
         <div class="personnes-container">
-            <h2>Personnes</h2>
+            {% for personne in personnes %}
+                <h1 class="titre-nom">{{ personne[0] }} {{ personne[1] }}</h1>
+            {% endfor %}
             <table>
                 <tr>
-                    <th>Nom</th>
-                    <th>Prénom</th>
                     <th>Poste</th>
                 </tr>
                 {% for personne in personnes %}
                 <tr>
-                    <td>{{ personne[0] }}</td>
-                    <td>{{ personne[1] }}</td>
                     <td>{{ personne[2] }}</td>
                 </tr>
                 {% endfor %}
