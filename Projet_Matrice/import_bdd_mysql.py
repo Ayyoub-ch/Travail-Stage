@@ -75,7 +75,7 @@ def recherche():
         SELECT 
             personne.nom, 
             personne.prenom, 
-            poste.prenom, 
+            personne.poste,
             hard.competence1, 
             hard.categorie, 
             niveau_hard.niveau
