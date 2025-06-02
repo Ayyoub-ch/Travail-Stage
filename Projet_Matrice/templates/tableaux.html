@@ -115,7 +115,7 @@
     <button type="submit">Retour sur la page admin</button>
     </form>
 
-    <form action="/rechercher" method="get">
+    <form action="/rechercher" method="POST">
         <select id="choix" name="choix">
             <option value="">-- Sélectionnez une personne--</option> <!-- faire en sorte que chaque personne soit comprise dans le menu déroulant-->
             {% for personne in personnes %}

@@ -127,7 +127,7 @@
     <button type="submit">Retour sur la page admin</button>
     </form>
 
-    <form action="{{ url_for('rechercher') }}" method="get">
+    <form action="{{ url_for('rechercher') }}" method="POST">
         <select id="choix" name="choix">
             <option value="">-- Sélectionnez une personne--</option> <!-- faire en sorte que chaque personne soit comprise dans le menu déroulant-->
             {% for personne in personnes %}
@@ -142,7 +142,7 @@
     <div class="main-container">
         <!-- Table personnes à gauche -->
         <div class="personnes-container">
-            {% for personne in personnes %}
+            {% for personne in personnes (ou hard_results) %}
                 <h1 class="titre-nom">{{ personne[0] }} {{ personne[1] }}</h1>
             {% endfor %}
             <table>
@@ -168,7 +168,7 @@
                     <th>Catégorie</th>
                     <th>Niveau</th>
                 </tr>
-                {% for skill in hard_skills %}
+                {% for skill in hard_results %}
                 <tr>
                     <td>{{ skill.competence1 }}</td>
                     <td>{{ skill.categorie }}</td>
@@ -187,7 +187,7 @@
                     <th>Compétence</th>
                     <th>Niveau</th>
                 </tr>
-                {% for skill in soft_skills %}
+                {% for skill in soft_results %}
                 <tr>
                     <td>{{ skill.competence2 }}</td>
                     <td>{{ skill.niveau }}</td>

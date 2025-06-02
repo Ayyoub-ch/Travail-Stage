@@ -75,6 +75,7 @@ def recherche():
         SELECT 
             personne.nom, 
             personne.prenom, 
+            poste.prenom, 
             hard.competence1, 
             hard.categorie, 
             niveau_hard.niveau
@@ -88,6 +89,7 @@ def recherche():
     SELECT 
         personne.nom, 
         personne.prenom, 
+        personne.poste, 
         soft.competence2, 
         niveau_soft.niveau
     FROM soft
