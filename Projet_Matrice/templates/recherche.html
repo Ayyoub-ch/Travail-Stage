@@ -119,17 +119,19 @@
     </style>
 </head>
 <body>
-    <h1>Tableaux de Compétences</h1>
+    {% for personne in personnes %}
+        <h1>Compétences de {{ personne[0] }} {{ personne[1] }}</h1>
+    {% endfor %}
 
     <form action="{{ url_for('retour') }}" method="post">
     <button type="submit">Retour sur la page admin</button>
     </form>
 
-    <form action="/rechercher" method="get">
+    <form action="{{ url_for('rechercher') }}" method="get">
         <select id="choix" name="choix">
             <option value="">-- Sélectionnez une personne--</option> <!-- faire en sorte que chaque personne soit comprise dans le menu déroulant-->
             {% for personne in personnes %}
-                <option value="{{ personne[0] }}">{{ personne[1] }} {{ personne[0] }}</option>
+                <option value="{{ personne[2] }}">{{ personne[1] }} {{ personne[0] }}</option>
             {% endfor %}
         </select>
         <button type="submit">Recherche</button>

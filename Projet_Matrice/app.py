@@ -46,10 +46,11 @@ def retour():
 
 @app.route('/rechercher', methods=['POST'])
 def rechercher():
-    recherche = recherche()
+    hard_results, soft_results = recherche()
     return render_template(
             "recherche.html",
-            recherche=recherche)
+            hard_results=hard_results,
+            soft_results=soft_results)
 
 if __name__ == "__main__":
     app.run(debug=True)

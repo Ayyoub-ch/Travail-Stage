@@ -53,7 +53,6 @@ def get_data():
         soft_skills = [
             {"competence2": row[0], "niveau": row[1]} for row in cursor.fetchall()
         ]
-        print(soft_skills)
         
         cursor.close()
 
@@ -71,12 +70,31 @@ def recherche():
         database="matrice"
     )
     cursor = conn.cursor()
-    cursor.execute("""SELECT hard.competence1, hard.categorie, niveau_hard.niveau
-                        FROM hard
-                        JOIN niveau_hard ON hard.id = niveau_hard.id_hard
-                        JOIN personne ON niveau_hard.id_personne = personne.id
-                        WHERE personne.nom = %s""")
-    personne = cursor.fetchall()
+    # Requête pour les hard skills
+    cursor.execute("""
+        SELECT 
+            personne.nom, 
+            personne.prenom, 
+            hard.competence1, 
+            hard.categorie, 
+            niveau_hard.niveau
+        FROM hard
+        JOIN niveau_hard ON hard.id = niveau_hard.id_hard
+        JOIN personne ON niveau_hard.id_personne = personne.id
+    """)
+    hard_results = cursor.fetchall()
+
+    cursor.execute("""
+    SELECT 
+        personne.nom, 
+        personne.prenom, 
+        soft.competence2, 
+        niveau_soft.niveau
+    FROM soft
+    JOIN niveau_soft ON soft.id = niveau_soft.id_soft
+    JOIN personne ON niveau_soft.id_personne = personne.id
+    """)
+    soft_results = cursor.fetchall()
     conn.close() 
-    return personne
+    return hard_results, soft_results
 
