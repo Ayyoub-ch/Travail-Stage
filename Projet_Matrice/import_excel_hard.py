@@ -88,13 +88,27 @@ def inserer_donnees(df_personnes, df_hard_clean, df_hard_level):
     finally:
         conn.close()
 
-def run():
-    # Tout ce que tu veux exécuter à l'import
-    from import_excel_hard import lire_excel, inserer_donnees
-    result = lire_excel()
-    if result:
-        df_personnes, df_hard_clean, df_hard_level = result
-        inserer_donnees(df_personnes, df_hard_clean, df_hard_level)
+# À la fin de import_excel_hard.py
+
+def run_hard(id_personne):
+    df_personnes, df_hard_clean, df_hard_level = lire_excel()
+    if df_hard_clean is None:
+        print("❌ Données hard invalides.")
+        return
+
+    conn = connexion_mysql()
+    cursor = conn.cursor()
+    try:
+        hard_inserter = hard_skills.HardSkillInserter(cursor, conn, df_hard_clean, id_personne)
+        hard_inserter.inserer()
+        conn.commit()
+    except Exception as e:
+        print("❌ Erreur lors de l'insertion hard:", e)
+        conn.rollback()
+    finally:
+        conn.close()
+
+
 
 
 # === Exécution principale ===

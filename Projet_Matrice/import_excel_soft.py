@@ -89,13 +89,43 @@ def inserer_donnees(df_personnes, df_soft_data_clean, df_soft_level):
     finally:
         conn.close()
 
-def run():
-    # Tout ce que tu veux exécuter à l'import
-    from import_excel_soft import lire_excel, inserer_donnees
-    result = lire_excel()
-    if result:
-        df_personnes, df_soft_data_clean, df_soft_level = result
-        inserer_donnees(df_personnes, df_soft_data_clean, df_soft_level)
+def run_person_only():
+    df_personnes, *_ = lire_excel()
+    if df_personnes is None:
+        return None
+    conn = connexion_mysql()
+    cursor = conn.cursor()
+    row = df_personnes.iloc[0]
+    cursor.execute(
+        "INSERT INTO personne (nom, prenom, poste) VALUES (%s, %s, %s)",
+        (row["Nom"], row["Prénom"], row["Poste"])
+    )
+    id_personne = cursor.lastrowid
+    conn.commit()
+    conn.close()
+    return id_personne
+
+# À la fin de import_excel_soft.py
+
+def run_soft(id_personne):
+    df_personnes, df_soft_data_clean, df_soft_level = lire_excel()
+    if df_soft_data_clean is None:
+        print("❌ Données soft invalides.")
+        return
+
+    conn = connexion_mysql()
+    cursor = conn.cursor()
+    try:
+        soft_inserter = soft_skills.SoftSkillInserter(cursor, conn, df_soft_data_clean, id_personne)
+        soft_inserter.inserer()
+        conn.commit()
+    except Exception as e:
+        print("❌ Erreur lors de l'insertion soft:", e)
+        conn.rollback()
+    finally:
+        conn.close()
+
+
 
 
 # === Exécution principale ===

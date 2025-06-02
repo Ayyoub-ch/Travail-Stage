@@ -27,14 +27,22 @@ def get_data():
             {"competence1": row[0], "categorie": row[1], "niveau": row[2]} for row in cursor.fetchall()
         ]
 
+        cursor.close()
+
+        cursor = conn.cursor()
+
         # Soft Skills
         cursor.execute("""SELECT soft.competence2, niveau_soft.niveau
                         FROM soft
                         JOIN niveau_soft ON soft.id = niveau_soft.id_soft
-                        WHERE niveau_soft.id_personne = (SELECT id FROM personne WHERE id = %s)""", (id_personne,))
+                        WHERE niveau_soft.id_personne = %s""", (id_personne,))
+        
         soft_skills = [
             {"competence2": row[0], "niveau": row[1]} for row in cursor.fetchall()
         ]
+        print(soft_skills)
+        
+        cursor.close()
 
         
         return personnes, hard_skills, soft_skills
