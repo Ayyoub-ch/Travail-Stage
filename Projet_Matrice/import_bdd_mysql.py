@@ -2,6 +2,19 @@
 
 import mysql.connector
 
+def get_personn():
+    conn = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="matrice"
+    )
+    cursor = conn.cursor()
+    cursor.execute("SELECT nom, prenom, id FROM personne")
+    personne = cursor.fetchall()
+    conn.close() 
+    return personne
+
 def get_data():
     conn = mysql.connector.connect(
         host="localhost",
@@ -26,20 +39,64 @@ def get_data():
         hard_skills = [
             {"competence1": row[0], "categorie": row[1], "niveau": row[2]} for row in cursor.fetchall()
         ]
-        
+
+        cursor.close()
+
+        cursor = conn.cursor()
 
         # Soft Skills
         cursor.execute("""SELECT soft.competence2, niveau_soft.niveau
                         FROM soft
                         JOIN niveau_soft ON soft.id = niveau_soft.id_soft
-                        WHERE niveau_soft.id_personne = (SELECT id FROM personne WHERE id = %s)""", (id_personne,))
+                        WHERE niveau_soft.id_personne = %s""", (id_personne,))
+        
         soft_skills = [
             {"competence2": row[0], "niveau": row[1]} for row in cursor.fetchall()
         ]
-        print(soft_skills)
+        
+        cursor.close()
 
         
         return personnes, hard_skills, soft_skills
 
     finally:
         conn.close()
+
+def recherche():
+    conn = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="matrice"
+    )
+    cursor = conn.cursor()
+    # Requête pour les hard skills
+    cursor.execute("""
+        SELECT 
+            personne.nom, 
+            personne.prenom, 
+            personne.poste,
+            hard.competence1, 
+            hard.categorie, 
+            niveau_hard.niveau
+        FROM hard
+        JOIN niveau_hard ON hard.id = niveau_hard.id_hard
+        JOIN personne ON niveau_hard.id_personne = personne.id
+    """)
+    hard_results = cursor.fetchall()
+
+    cursor.execute("""
+    SELECT 
+        personne.nom, 
+        personne.prenom, 
+        personne.poste, 
+        soft.competence2, 
+        niveau_soft.niveau
+    FROM soft
+    JOIN niveau_soft ON soft.id = niveau_soft.id_soft
+    JOIN personne ON niveau_soft.id_personne = personne.id
+    """)
+    soft_results = cursor.fetchall()
+    conn.close() 
+    return hard_results, soft_results
+

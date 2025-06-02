@@ -1,15 +1,15 @@
 from flask import Flask, render_template, abort, redirect, url_for, request
-from import_bdd_mysql import get_data
-import import_excel_soft  # ⚠️ Ce module doit avoir une fonction `run()` définie
-import import_excel_hard  # ⚠️ Ce module doit avoir une fonction `run()` définie
+from import_bdd_mysql import get_data, get_personn, recherche
+import import_excel_all
 
 app = Flask(__name__)
 
 @app.route("/")
 def index():
     try:
+        personne=get_personn()
         return render_template(
-            "admin.html"
+            "admin.html",personne=personne
         )
     except Exception as e:
         app.logger.error(f"An error occurred: {e}")
@@ -18,12 +18,12 @@ def index():
 @app.route('/importer', methods=['POST'])
 def importer_matrice():
     try:
-        import_excel_soft.run()  # Cette fonction doit exécuter l’importation
-        import_excel_hard.run()  # Cette fonction doit exécuter l’importation
+        import_excel_all.run()  # nouvelle méthode centralisée
         return redirect(url_for('index'))
     except Exception as e:
         app.logger.error(f"Erreur lors de l'importation : {e}")
         abort(500, description="Erreur lors de l'importation des matrices.")
+
 
 
 @app.route('/voir_comp', methods=['POST'])
@@ -43,6 +43,14 @@ def voir_comp():
 def retour():
     return render_template("admin.html")
 
+
+@app.route('/rechercher', methods=['POST'])
+def rechercher():
+    hard_results, soft_results = recherche()
+    return render_template(
+            "recherche.html",
+            hard_results=hard_results,
+            soft_results=soft_results)
+
 if __name__ == "__main__":
     app.run(debug=True)
-

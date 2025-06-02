@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8"/> 
+    <title>Résultat de la Recherche</title>
+    <meta name="author" content="Ayyoub"/>
+    <meta name="keywords" content="A COMPLETER"/>
+    <style>
+        body {
+            background-image: url('../image/logical.png');
+            background-repeat:repeat;
+            background-size: auto;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            align-items: center;
+            justify-content: flex-start;
+            text-align: center;
+        }
+
+        .titre-nom {
+            font-size: 32px;
+            font-weight: bold;
+            color: #212529;
+            margin: 30px 0 10px 0;
+        }
+
+        h1 {
+            color: #343a40;
+        }
+
+        form {
+            margin: 20px auto;
+            max-width: 320px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        select {
+            flex-grow: 1;
+            padding: 8px 12px;
+            font-size: 16px;
+            border: 1.5px solid #ced4da;
+            border-radius: 4px;
+            background-color: white;
+            color: #343a40;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #495057;
+        }
+
+        button {
+            padding: 8px 16px;
+            font-size: 16px;
+            background-color: #007bff;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .skills-wrapper {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 40px;
+            padding-bottom: 40px;
+        }
+
+        .skills-container {
+            display: flex;
+            flex-direction: row;
+            gap: 40px;
+            justify-content: center;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .skill-block {
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            margin-bottom: 10px;
+            color: #343a40;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 300px;
+            border: 2px solid #dee2e6;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            color: #343a40;
+        }
+
+
+    </style>
+</head>
+<body>
+
+    {% if hard_results %}
+        <div class="titre-nom">
+            <h1> Compétences de {{ hard_results[0][0] }} {{ hard_results[0][1] }}</h1>
+        </div>
+    {% endif %}
+
+    <form action="{{ url_for('retour') }}" method="post">
+        <button type="submit">Retour sur la page admin</button>
+    </form>
+
+    <form action="{{ url_for('rechercher') }}" method="post">
+        <select id="choix" name="choix">
+            <option value="">-- Sélectionnez une personne--</option>
+            {% for ligne in hard_results %}
+                <option value="{{ ligne[0] }}">{{ ligne[1] }} {{ ligne[0] }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Recherche</button>
+    </form>
+
+    <h2> Poste :{{ hard_results[0][2] }}</h2>
+
+    <div class="main-container">
+        <div class="skills-container">
+            <div class="skill-block">
+    <div>
+        <h2>Hard Skills</h2>
+        <table>
+            <tr>
+                <th>Compétence</th>
+                <th>Catégorie</th>
+                <th>Niveau</th>
+            </tr>
+            {% for skill in hard_results %}
+            <tr>
+                <td>{{ skill[3] }}</td>  <!-- competence1 -->
+                <td>{{ skill[4] }}</td>  <!-- categorie -->
+                <td>{{ skill[5] }}</td>  <!-- niveau -->
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+
+            <div class="skill-block">
+            <div>
+                <h2>Soft Skills</h2>
+                <table>
+                    <tr>
+                        <th>Compétence</th>
+                        <th>Niveau</th>
+                    </tr>
+                    {% for skill in soft_results %}
+                    <tr>
+                        <td>{{ skill[3] }}</td>  <!-- competence2 -->
+                        <td>{{ skill[4] }}</td>  <!-- niveau -->
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+
+        </div>
+    </div>
+
+</body>
+</html>
