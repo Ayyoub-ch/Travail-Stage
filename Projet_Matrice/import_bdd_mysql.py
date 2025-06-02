@@ -26,6 +26,7 @@ def get_data():
         hard_skills = [
             {"competence1": row[0], "categorie": row[1], "niveau": row[2]} for row in cursor.fetchall()
         ]
+        
 
         # Soft Skills
         cursor.execute("""SELECT soft.competence2, niveau_soft.niveau
@@ -35,6 +36,7 @@ def get_data():
         soft_skills = [
             {"competence2": row[0], "niveau": row[1]} for row in cursor.fetchall()
         ]
+        print(soft_skills)
 
         
         return personnes, hard_skills, soft_skills
