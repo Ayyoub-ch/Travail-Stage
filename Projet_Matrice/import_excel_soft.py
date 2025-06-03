@@ -2,9 +2,10 @@ import pandas as pd
 import mysql.connector
 import re
 import soft_skills
+import os
 
 # === Configuration ===
-fichier_excel = "Matrice_Nicolas_Morigny.xlsx"
+fichier_path = "Matrices"
 feuille_soft = "Matrice soft skills"
 
 # === Connexion MySQL ===
@@ -17,9 +18,9 @@ def connexion_mysql():
     )
 
 # === Lecture du fichier Excel ===
-def lire_excel():
+def lire_excel(fichier_path):
     try:
-        excel_file = pd.ExcelFile(fichier_excel)
+        excel_file = pd.ExcelFile(fichier_path)
 
         df_soft_meta = pd.read_excel(excel_file, sheet_name=feuille_soft, header=None)
         nom_prenom_cell = df_soft_meta.iloc[1, 0]
@@ -61,9 +62,9 @@ def inserer_donnees(df_personnes, df_soft_data_clean, df_soft_level):
 
     try:
         # Nettoyage
-        cursor.execute("DELETE FROM personne")
-        cursor.execute("DELETE FROM soft")
-        cursor.execute("DELETE FROM niveau_soft")
+        #cursor.execute("DELETE FROM personne")
+        #cursor.execute("DELETE FROM soft")
+       # cursor.execute("DELETE FROM niveau_soft")
 
         # Insertion personne
         for _, row in df_personnes.iterrows():
@@ -89,8 +90,8 @@ def inserer_donnees(df_personnes, df_soft_data_clean, df_soft_level):
     finally:
         conn.close()
 
-def run_person_only():
-    df_personnes, *_ = lire_excel()
+def run_person_only(fichier):
+    df_personnes, *_ = lire_excel(fichier)
     if df_personnes is None:
         return None
     conn = connexion_mysql()
@@ -107,8 +108,8 @@ def run_person_only():
 
 # À la fin de import_excel_soft.py
 
-def run_soft(id_personne):
-    df_personnes, df_soft_data_clean, df_soft_level = lire_excel()
+def run_soft(id_personne, fichier):
+    df_personnes, df_soft_data_clean, df_soft_level = lire_excel(fichier)
     if df_soft_data_clean is None:
         print("❌ Données soft invalides.")
         return
@@ -128,13 +129,10 @@ def run_soft(id_personne):
 
 
 
-# === Exécution principale ===
 if __name__ == "__main__":
-    result = lire_excel()
-
-    if result and not any(r is None for r in result):
-        df_personnes, df_soft_data_clean, df_soft_level = result
-
+    dossier = "Matrices"
+    for i in range(46, 48):
+        fichier = os.path.join(dossier, f"{i}.xlsx")
+        print(f"📄 Traitement de : {fichier}")
+        df_personnes, df_soft_data_clean, df_soft_level = lire_excel(fichier)
         inserer_donnees(df_personnes, df_soft_data_clean, df_soft_level)
-    else:
-        print("❌ Aucune donnée insérée.")

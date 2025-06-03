@@ -46,11 +46,34 @@ def retour():
 
 @app.route('/rechercher', methods=['POST'])
 def rechercher():
-    hard_results, soft_results = recherche()
-    return render_template(
+    choix = request.form.get("choix")
+    print("choix reçu :", choix)
+
+    personnes = get_personn()
+
+    if not choix:
+        return render_template(
             "recherche.html",
-            hard_results=hard_results,
-            soft_results=soft_results)
+            personnes=personnes,
+            hard_results=[],
+            soft_results=[],
+            choix=""
+        )
+
+    hard_results, soft_results = recherche(choix)
+
+    return render_template(
+        "recherche.html",
+        personnes=personnes,
+        hard_results=hard_results,
+        soft_results=soft_results,
+        choix=choix
+    )
+
+
+
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)

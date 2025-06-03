@@ -62,17 +62,17 @@ def get_data():
     finally:
         conn.close()
 
-def recherche():
+def recherche(id_personne):
     conn = mysql.connector.connect(
         host="localhost",
         user="root",
         password="",
         database="matrice"
     )
-    cursor = conn.cursor()
-    # Requête pour les hard skills
-    cursor.execute("""
+    cursor1 = conn.cursor()
+    cursor1.execute("""
         SELECT 
+            personne.id,
             personne.nom, 
             personne.prenom, 
             personne.poste,
@@ -82,21 +82,29 @@ def recherche():
         FROM hard
         JOIN niveau_hard ON hard.id = niveau_hard.id_hard
         JOIN personne ON niveau_hard.id_personne = personne.id
-    """)
-    hard_results = cursor.fetchall()
+        WHERE personne.id = %s
+    """, (id_personne,))
+    hard_results = cursor1.fetchall()
+    cursor1.close()
 
-    cursor.execute("""
-    SELECT 
-        personne.nom, 
-        personne.prenom, 
-        personne.poste, 
-        soft.competence2, 
-        niveau_soft.niveau
-    FROM soft
-    JOIN niveau_soft ON soft.id = niveau_soft.id_soft
-    JOIN personne ON niveau_soft.id_personne = personne.id
-    """)
-    soft_results = cursor.fetchall()
-    conn.close() 
+    cursor2 = conn.cursor()
+    cursor2.execute("""
+        SELECT 
+            personne.id,
+            personne.nom, 
+            personne.prenom, 
+            personne.poste, 
+            soft.competence2, 
+            niveau_soft.niveau
+        FROM soft
+        JOIN niveau_soft ON soft.id = niveau_soft.id_soft
+        JOIN personne ON niveau_soft.id_personne = personne.id
+        WHERE personne.id = %s
+    """, (id_personne,))
+    soft_results = cursor2.fetchall()
+    cursor2.close()
+
+    conn.close()
     return hard_results, soft_results
+
 

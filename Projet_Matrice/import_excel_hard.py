@@ -2,9 +2,10 @@ import pandas as pd
 import mysql.connector
 import re
 import hard_skills
+import os
 
 # === Configuration ===
-fichier_excel = "Matrice_Nicolas_Morigny.xlsx"
+fichier_path = "Matrices"
 feuille_hard = "Matrice hard skills"
 
 # === Connexion MySQL ===
@@ -17,9 +18,9 @@ def connexion_mysql():
     )
 
 # === Lecture du fichier Excel ===
-def lire_excel():
+def lire_excel(fichier_path):
     try:
-        excel_file = pd.ExcelFile(fichier_excel)
+        excel_file = pd.ExcelFile(fichier_path)
 
         df_hard_meta = pd.read_excel(excel_file, sheet_name=feuille_hard, header=None)
         nom_prenom_cell = df_hard_meta.iloc[1, 0]
@@ -61,19 +62,19 @@ def inserer_donnees(df_personnes, df_hard_clean, df_hard_level):
 
     try:
         # Nettoyage
-        cursor.execute("DELETE FROM personne")
-        cursor.execute("DELETE FROM hard")
-        cursor.execute("DELETE FROM niveau_hard")
+        #cursor.execute("DELETE FROM personne")
+        #cursor.execute("DELETE FROM hard")
+        #cursor.execute("DELETE FROM niveau_hard")
 
         # Insertion personne
+        id_personne = None
         for _, row in df_personnes.iterrows():
             cursor.execute(
                 "INSERT INTO personne (nom, prenom, poste) VALUES (%s, %s, %s)",
                 (row["Nom"], row["Prénom"], row["Poste"])
             )
-        cursor.execute("SELECT id FROM personne WHERE nom = %s AND prenom = %s", (row["Nom"], row["Prénom"]))
-        id_personne = cursor.fetchone()[0]
-        print(f"🧍 ID Personne: {id_personne}")
+            id_personne = cursor.lastrowid  # on récupère immédiatement
+            print(f"🧍 ID Personne: {id_personne}")
 
         # Appel des classes
         hard_inserter = hard_skills.HardSkillInserter(cursor, conn, df_hard_clean, id_personne)
@@ -90,8 +91,8 @@ def inserer_donnees(df_personnes, df_hard_clean, df_hard_level):
 
 # À la fin de import_excel_hard.py
 
-def run_hard(id_personne):
-    df_personnes, df_hard_clean, df_hard_level = lire_excel()
+def run_hard(id_personne, fichier):
+    df_personnes, df_hard_clean, df_hard_level = lire_excel(fichier)
     if df_hard_clean is None:
         print("❌ Données hard invalides.")
         return
@@ -112,12 +113,11 @@ def run_hard(id_personne):
 
 
 # === Exécution principale ===
+
 if __name__ == "__main__":
-    result = lire_excel()
-
-    if result and not any(r is None for r in result):
-        df_personnes, df_hard_clean, df_hard_level = result
-
+    dossier = "Matrices"
+    for i in range(46, 48):
+        fichier = os.path.join(dossier, f"{i}.xlsx")
+        print(f"📄 Traitement de : {fichier}")
+        df_personnes, df_hard_clean, df_hard_level  = lire_excel(fichier)
         inserer_donnees(df_personnes, df_hard_clean, df_hard_level)
-    else:
-        print("❌ Aucune donnée insérée.")
