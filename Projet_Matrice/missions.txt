@@ -4,4 +4,6 @@ trouver un moyen de pouvoir modifier les fichiers pour qu'ils soient corrects
 (bonne synthaxe pour le nom et prénom, nom/prénom au bon endroit) [FAIT]
 
 
-prendre automatiquement le premier de la liste + garder en mémoire du menu déroulant la personne sélectionnée
+prendre automatiquement le premier de la liste + garder en mémoire du menu déroulant la personne sélectionnée[fait]
+
+(tableaux la recherche est sans doute vide)

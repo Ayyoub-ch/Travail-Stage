@@ -125,5 +125,55 @@
         <button type="submit">Recherche</button>
     </form>
 
+    {% if hard_results and hard_results|length > 0 and choix == personnes[0][2] %}
+        <h2> Poste : {{ hard_results[0][3] }} </h2>
+        <h2> Numéro : {{ hard_results[0][0] }} </h2>
+    {% endif %}
+
+
+
+    <div class="main-container">
+        <div class="skills-container">
+            <div class="skill-block">
+    <div>
+        <h2>Hard Skills</h2>
+        <table>
+            <tr>
+                <th>Compétence</th>
+                <th>Catégorie</th>
+                <th>Niveau</th>
+            </tr>
+            {% for skill in hard_results %}
+            <tr>
+                <td>{{ skill[4] }}</td>  <!-- competence1 -->
+                <td>{{ skill[5] }}</td>  <!-- categorie -->
+                <td>{{ skill[6] }}</td>  <!-- niveau -->
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+
+            <div class="skill-block">
+            <div>
+                <h2>Soft Skills</h2>
+                <table>
+                    <tr>
+                        <th>Compétence</th>
+                        <th>Niveau</th>
+                    </tr>
+                    {% for skill in soft_results %}
+                    <tr>
+                        <td>{{ skill[4] }}</td>  <!-- competence2 -->
+                        <td>{{ skill[5] }}</td>  <!-- niveau -->
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+
+        </div>
+    </div>
+
 </body>
 </html>
