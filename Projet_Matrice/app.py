@@ -51,14 +51,7 @@ def rechercher():
 
     personnes = get_personn()
 
-     # Si l'utilisateur n'a rien sélectionné, on prend par défaut la première personne
-    if not choix and personnes:
-        choix = str(personnes[0][2])  # p[2] = id de la première personne
-        print("ℹ️ Choix forcé sur le premier ID :", choix)
-
-    try:
-        choix_int = int(choix)
-    except (ValueError, TypeError):
+    if not choix:
         return render_template(
             "recherche.html",
             personnes=personnes,
