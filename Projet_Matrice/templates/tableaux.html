@@ -115,11 +115,13 @@
     <button type="submit">Retour sur la page admin</button>
     </form>
 
-    <form action="/rechercher" method="POST">
-        <select id="choix" name="choix">
-            <option value="">-- Sélectionnez une personne--</option> <!-- faire en sorte que chaque personne soit comprise dans le menu déroulant-->
-            {% for personne in personnes %}
-                <option value="{{ personne[0] }}">{{ personne[1] }} {{ personne[0] }}</option>
+    <form action="{{ url_for('rechercher') }}" method="post">
+        <select id="choix" name="choix" required>
+            <option value="">-- Sélectionnez une personne --</option>
+            {% for p in personnes %}
+                <option value="{{ p[2] }}" {% if choix|int == p[2] %}selected{% endif %}>
+                    {{ p[1] }} {{ p[0] }}
+                </option>
             {% endfor %}
         </select>
         <button type="submit">Recherche</button>
