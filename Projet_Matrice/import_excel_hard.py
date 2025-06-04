@@ -58,7 +58,7 @@ def inserer_donnees(df_personnes, df_hard_clean, df_hard_level):
         return
 
     conn = connexion_mysql()
-    cursor = conn.cursor()
+    cursor =  conn.cursor(buffered=True)
 
     try:
         # Nettoyage
@@ -91,6 +91,8 @@ def inserer_donnees(df_personnes, df_hard_clean, df_hard_level):
 
 # À la fin de import_excel_hard.py
 
+
+
 def run_hard(id_personne, fichier):
     df_personnes, df_hard_clean, df_hard_level = lire_excel(fichier)
     if df_hard_clean is None:
@@ -98,7 +100,7 @@ def run_hard(id_personne, fichier):
         return
 
     conn = connexion_mysql()
-    cursor = conn.cursor()
+    cursor =  conn.cursor(buffered=True)
     try:
         hard_inserter = hard_skills.HardSkillInserter(cursor, conn, df_hard_clean, id_personne)
         hard_inserter.inserer()
@@ -116,7 +118,7 @@ def run_hard(id_personne, fichier):
 
 if __name__ == "__main__":
     dossier = "Matrices"
-    for i in range(46, 48):
+    for i in range(46, 90):
         fichier = os.path.join(dossier, f"{i}.xlsx")
         print(f"📄 Traitement de : {fichier}")
         df_personnes, df_hard_clean, df_hard_level  = lire_excel(fichier)

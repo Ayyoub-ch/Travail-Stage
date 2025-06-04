@@ -1,7 +1,30 @@
 # import_bdd_mysql.py
 
 import mysql.connector
+"""
+def get_all_categories():
+    conn = mysql.connector.connect(host="localhost", user="root", password="", database="matrice")
+    cursor = conn.cursor()
+    cursor.execute("SELECT DISTINCT categorie FROM hard")
+    categories = [row[0] for row in cursor.fetchall()]
+    conn.close()
+    return categories
 
+def get_filtered_skills(selected_categories=None):
+    conn = mysql.connector.connect(host="localhost", user="root", password="", database="matrice")
+    cursor = conn.cursor(dictionary=True)
+
+    if selected_categories:
+        format_strings = ','.join(['%s'] * len(selected_categories))
+        query = f"SELECT * FROM hard WHERE categorie IN ({format_strings})"
+        cursor.execute(query, tuple(selected_categories))
+    else:
+        cursor.execute("SELECT * FROM hard")
+
+    skills = cursor.fetchall()
+    conn.close()
+    return skills
+"""
 def get_personn():
     conn = mysql.connector.connect(
         host="localhost",
@@ -24,7 +47,7 @@ def get_data():
     )
 
     try:
-        cursor = conn.cursor()
+        cursor = conn.cursor(buffered=True)
 
         # Personnes
         cursor.execute("SELECT nom, prenom, poste, id FROM personne")
@@ -42,7 +65,7 @@ def get_data():
 
         cursor.close()
 
-        cursor = conn.cursor()
+        cursor = conn.cursor(buffered=True)
 
         # Soft Skills
         cursor.execute("""SELECT soft.competence2, niveau_soft.niveau
@@ -69,7 +92,7 @@ def recherche(id_personne):
         password="",
         database="matrice"
     )
-    cursor1 = conn.cursor()
+    cursor1 = conn.cursor(buffered=True)
     cursor1.execute("""
         SELECT 
             personne.id,
@@ -87,7 +110,7 @@ def recherche(id_personne):
     hard_results = cursor1.fetchall()
     cursor1.close()
 
-    cursor2 = conn.cursor()
+    cursor2 = conn.cursor(buffered=True)
     cursor2.execute("""
         SELECT 
             personne.id,

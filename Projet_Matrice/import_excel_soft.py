@@ -58,7 +58,7 @@ def inserer_donnees(df_personnes, df_soft_data_clean, df_soft_level):
         return
 
     conn = connexion_mysql()
-    cursor = conn.cursor()
+    cursor =  conn.cursor(buffered=True)
 
     try:
         # Nettoyage
@@ -110,16 +110,22 @@ def run_person_only(fichier):
 
 def run_soft(id_personne, fichier):
     df_personnes, df_soft_data_clean, df_soft_level = lire_excel(fichier)
-    if df_soft_data_clean is None:
-        print("❌ Données soft invalides.")
+
+    if id_personne is None:
+        print("❌ ID personne invalide.")
+        return
+
+    if df_soft_data_clean is None or df_soft_data_clean.empty:
+        print("❌ Données soft invalides ou vides.")
         return
 
     conn = connexion_mysql()
-    cursor = conn.cursor()
+    cursor =  conn.cursor(buffered=True)
     try:
         soft_inserter = soft_skills.SoftSkillInserter(cursor, conn, df_soft_data_clean, id_personne)
         soft_inserter.inserer()
         conn.commit()
+        print(f"✅ Soft skills insérées pour ID {id_personne}")
     except Exception as e:
         print("❌ Erreur lors de l'insertion soft:", e)
         conn.rollback()
@@ -131,7 +137,7 @@ def run_soft(id_personne, fichier):
 
 if __name__ == "__main__":
     dossier = "Matrices"
-    for i in range(46, 48):
+    for i in range(46, 90):
         fichier = os.path.join(dossier, f"{i}.xlsx")
         print(f"📄 Traitement de : {fichier}")
         df_personnes, df_soft_data_clean, df_soft_level = lire_excel(fichier)

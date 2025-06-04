@@ -5,10 +5,11 @@
     <title>Page d'administration</title>
     <meta name="author" content="Ayyoub"/>
     <meta name="keywords" content="A COMPLETER"/>
+
     <style>
         body {
             background-image: url('../image/logical.png');
-            background-repeat:repeat;
+            background-repeat: repeat;
             background-size: auto;
             font-family: Arial, sans-serif;
             background-color: #f8f9fa;
@@ -46,14 +47,42 @@
             background-color: #0056b3;
             transform: translateY(-2px);
         }
-    </style>
-</head> <!-- Tu avais oublié de fermer la balise head -->
-<body>
 
+        .alert {
+            padding: 15px 25px;
+            border-radius: 5px;
+            margin-top: 15px;
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        #loader {
+            display: none;
+            font-size: 18px;
+            color: #333;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
     <h1>Interface d'administration</h1>
 
+
     <!-- Formulaire pour importer les matrices -->
-    <form action="{{ url_for('importer_matrice') }}" method="post">
+    <form action="{{ url_for('importer_matrice') }}" method="post" onsubmit="showLoader()">
         <button type="submit">Importer les matrices</button>
     </form>
 
@@ -62,5 +91,16 @@
         <button type="submit">Voir les compétences</button>
     </form>
 
+    <!-- Loader -->
+    <div id="loader">
+        <p>⏳ Importation en cours...</p>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        function showLoader() {
+            document.getElementById('loader').style.display = 'block';
+        }
+    </script>
 </body>
 </html>

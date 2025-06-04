@@ -28,7 +28,7 @@ def run():
 
         # Appels
         dossier = "Matrices"
-        for i in range(46, 48):
+        for i in range(46, 90):
             fichier = os.path.join(dossier, f"{i}.xlsx")
             print(f"📄 Traitement de : {fichier}")
             id_personne = import_excel_soft.run_person_only(fichier)

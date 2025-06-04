@@ -133,18 +133,24 @@
     </form>
 
     <form action="{{ url_for('rechercher') }}" method="post">
-        <select id="choix" name="choix">
+        <select id="choix" name="choix" required>
             <option value="">-- Sélectionnez une personne--</option>
             {% for p in personnes %}
-                <option value="{{ p[2] }}">{{ p[1] }} {{ p[0] }}</option>
+                <option value="{{ p[2] }}" {% if p[2] == choix %}selected{% endif %}>
+                    {{ p[1] }} {{ p[0] }}
+                </option>
             {% endfor %}
         </select>
         <button type="submit">Recherche</button>
     </form>
 
+    
+
     {% if hard_results and hard_results|length > 0 %}
-        <h2> Poste : {{ hard_results[0][3] }}</h2>
+        <h2> Poste : {{ hard_results[0][3] }} </h2>
+        <h2> Numéro : {{ hard_results[0][0] }} </h2>
     {% endif %}
+
 
     <div class="main-container">
         <div class="skills-container">
