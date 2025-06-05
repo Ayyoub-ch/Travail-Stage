@@ -98,8 +98,8 @@ def run_person_only(fichier):
     cursor = conn.cursor()
     row = df_personnes.iloc[0]
     cursor.execute(
-        "INSERT INTO personne (nom, prenom, poste) VALUES (%s, %s, %s)",
-        (row["Nom"], row["Prénom"], row["Poste"])
+        "INSERT INTO personne (nom, prenom, poste, intercontrat) VALUES (%s, %s, %s, %s)",
+        (row["Nom"], row["Prénom"], row["Poste"], 0)
     )
     id_personne = cursor.lastrowid
     conn.commit()

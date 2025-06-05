@@ -29,13 +29,21 @@
             color: #343a40;
         }
 
-        form {
+        .search-forms {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
             margin: 20px auto;
-            max-width: 320px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .form-group {
             display: flex;
             gap: 10px;
             justify-content: center;
             align-items: center;
+            flex-wrap: wrap;
         }
 
         select {
@@ -48,6 +56,7 @@
             color: #343a40;
             cursor: pointer;
             transition: border-color 0.3s ease;
+            min-width: 250px;
         }
 
         select:focus {
@@ -64,6 +73,7 @@
             color: white;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            white-space: nowrap;
         }
 
         button:hover {
@@ -117,7 +127,9 @@
             color: #343a40;
         }
 
-
+        .back-button {
+            margin: 20px 0;
+        }
     </style>
 </head>
 <body>
@@ -128,71 +140,144 @@
     </div>
     {% endif %}
 
-    <form action="{{ url_for('retour') }}" method="post">
-        <button type="submit">Retour sur la page admin</button>
-    </form>
+    <div class="back-button">
+        <form action="{{ url_for('retour') }}" method="post">
+            <button type="submit">Retour sur la page admin</button>
+        </form>
+    </div>
 
-    <form action="{{ url_for('rechercher') }}" method="post">
-        <select id="choix" name="choix" required>
+<div class="search-forms">
+    <!-- Formulaire de recherche combinée -->
+    <form action="{{ url_for('rechercher') }}" method="post" class="form-group">
+
+        <!-- Case à cocher pour intercontrat -->
+        <label style="display: flex; align-items: center; gap: 5px; margin-bottom: 10px;">
+            <input type="checkbox" name="intercontrat" {% if intercontrat %}checked{% endif %}>
+            Afficher uniquement les personnes en intercontrat
+        </label>
+
+        <!-- Liste déroulante pour sélectionner une personne -->
+        <select id="choix_personne" name="choix_personne">
             <option value="">-- Sélectionnez une personne --</option>
             {% for p in personnes %}
-                <option value="{{ p[2] }}" {% if choix|int == p[2] %}selected{% endif %}>
-                    {{ p[1] }} {{ p[0] }}
+                <option value="{{ p[0] }}" {% if choix_personne|int == p[0] %}selected{% endif %}>
+                    {{ p[1] }} {{ p[2] }}
                 </option>
             {% endfor %}
         </select>
-        <button type="submit">Recherche</button>
+
+        <!-- Liste déroulante pour sélectionner une compétence -->
+        <select id="choix_competence" name="choix_competence">
+            <option value="">-- Sélectionnez une compétence --</option>
+            <option value="0" {% if choix_competence == '0' %}selected{% endif %}>Tous</option>
+            {% for comp in hard_skills %}
+                <option value="{{ comp[0] }}" {% if choix_competence|int == comp[0] %}selected{% endif %}>
+                    {{ comp[1] }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <button type="submit">Rechercher</button>
     </form>
+</div>
 
 
-    
+
+        <!-- Résultats de la recherche par compétence -->
+        {% if hard_skills %}
+            <h3>Personnes ayant la compétence sélectionnée :</h3>
+            <table border="1" cellpadding="5" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Prénom</th>
+                        <th>Poste</th>
+                        <th>Niveau</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in hard_skills %}
+                        <tr>
+                            <td>{{ c.competence1 }}</td>
+                            <td>{{ c.categorie }}</td>
+                            <td>{{ c.niveau }}</td>
+                        </tr>
+                    {% endfor %}
+
+                </tbody>
+            </table>
+        {% endif %}
 
     {% if hard_results and hard_results|length > 0 %}
         <h2> Poste : {{ hard_results[0][3] }} </h2>
         <h2> Numéro : {{ hard_results[0][0] }} </h2>
+        <h2>Intercontrat : {{ hard_results[0][4] }}</h2> 
+    {% endif %}
+
+    {% if intercontrat %}
+        <h2>Personnes en Intercontrat</h2>
+        <table border="1" cellpadding="5" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th>ID</th>
+                    <th>Intercontrat</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in hard_results %}
+                <tr>
+                    <td>{{ p[0] }}</td>
+                    <td>{{ p[1] }}</td>
+                    <td>{{ p[2] }}</td>
+                    <td>{{ p[3] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     {% endif %}
 
 
     <div class="main-container">
         <div class="skills-container">
             <div class="skill-block">
-    <div>
-        <h2>Hard Skills</h2>
-        <table>
-            <tr>
-                <th>Compétence</th>
-                <th>Catégorie</th>
-                <th>Niveau</th>
-            </tr>
-            {% for skill in hard_results %}
-            <tr>
-                <td>{{ skill[4] }}</td>  <!-- competence1 -->
-                <td>{{ skill[5] }}</td>  <!-- categorie -->
-                <td>{{ skill[6] }}</td>  <!-- niveau -->
-            </tr>
-            {% endfor %}
-        </table>
-    </div>
-</div>
+                <div>
+                    <h2>Hard Skills</h2>
+                    <table>
+                        <tr>
+                            <th>Compétence</th>
+                            <th>Catégorie</th>
+                            <th>Niveau</th>
+                        </tr>
+                        {% for skill in hard_results %}
+                        <tr>
+                            <td>{{ skill[5] }}</td>
+                            <td>{{ skill[6] }}</td>
+                            <td>{{ skill[7] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
 
             <div class="skill-block">
-            <div>
-                <h2>Soft Skills</h2>
-                <table>
-                    <tr>
-                        <th>Compétence</th>
-                        <th>Niveau</th>
-                    </tr>
-                    {% for skill in soft_results %}
-                    <tr>
-                        <td>{{ skill[4] }}</td>  <!-- competence2 -->
-                        <td>{{ skill[5] }}</td>  <!-- niveau -->
-                    </tr>
-                    {% endfor %}
-                </table>
+                <div>
+                    <h2>Soft Skills</h2>
+                    <table>
+                        <tr>
+                            <th>Compétence</th>
+                            <th>Niveau</th>
+                        </tr>
+                        {% for skill in soft_results %}
+                        <tr>
+                            <td>{{ skill[5] }}</td>
+                            <td>{{ skill[6] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
             </div>
-        </div>
-
         </div>
     </div>
 
