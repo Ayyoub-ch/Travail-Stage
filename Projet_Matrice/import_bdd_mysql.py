@@ -12,7 +12,7 @@ def get_all_hard_competences():
     )
     try:
         cursor = conn.cursor()
-        cursor.execute("SELECT id, competence1 FROM hard ORDER BY competence1")
+        cursor.execute("SELECT DISTINCT id, competence1 FROM hard ORDER BY competence1")
         result = cursor.fetchall()
         cursor.close()
         return result  # Liste de tuples : [(1, "Python"), (2, "SQL"), ...]
@@ -123,73 +123,129 @@ def recherche_avec_filtre(id_personne=None, id_competence=None):
         database="matrice"
     )
 
-    if id_personne is not None:
-        cursor1 = conn.cursor(buffered=True)
-        cursor1.execute("""
-            SELECT 
-                personne.id,
-                personne.nom, 
-                personne.prenom, 
-                personne.poste,
-                personne.intercontrat,        
-                hard.competence1, 
-                hard.categorie, 
-                niveau_hard.niveau
-            FROM hard
-            JOIN niveau_hard ON hard.id = niveau_hard.id_hard
-            JOIN personne ON niveau_hard.id_personne = personne.id
-            WHERE personne.id = %s
-        """, (id_personne,))
-        hard_results = cursor1.fetchall()
-        cursor1.close()
+    try:
+        if id_personne is not None:
+            # Recherche par personne
+            cursor1 = conn.cursor(buffered=True)
+            cursor1.execute("""
+                SELECT 
+                    personne.id,
+                    personne.nom, 
+                    personne.prenom, 
+                    personne.poste,
+                    personne.intercontrat,        
+                    hard.competence1, 
+                    hard.categorie, 
+                    niveau_hard.niveau
+                FROM personne
+                JOIN niveau_hard ON personne.id = niveau_hard.id_personne
+                JOIN hard ON niveau_hard.id_hard = hard.id
+                WHERE personne.id = %s
+            """, (id_personne,))
+            hard_results = cursor1.fetchall()
+            cursor1.close()
 
-        cursor2 = conn.cursor(buffered=True)
-        cursor2.execute("""
-            SELECT 
-                personne.id,
-                personne.nom, 
-                personne.prenom, 
-                personne.poste,
-                personne.intercontrat,  
-                soft.competence2, 
-                niveau_soft.niveau
-            FROM soft
-            JOIN niveau_soft ON soft.id = niveau_soft.id_soft
-            JOIN personne ON niveau_soft.id_personne = personne.id
-            WHERE personne.id = %s
-        """, (id_personne,))
-        soft_results = cursor2.fetchall()
-        cursor2.close()
+            cursor2 = conn.cursor(buffered=True)
+            cursor2.execute("""
+                SELECT 
+                    personne.id,
+                    personne.nom, 
+                    personne.prenom, 
+                    personne.poste,
+                    personne.intercontrat,  
+                    soft.competence2, 
+                    niveau_soft.niveau
+                FROM personne
+                JOIN niveau_soft ON personne.id = niveau_soft.id_personne
+                JOIN soft ON niveau_soft.id_soft = soft.id
+                WHERE personne.id = %s
+            """, (id_personne,))
+            soft_results = cursor2.fetchall()
+            cursor2.close()
 
+            return {'type': 'personne', 'hard': hard_results, 'soft': soft_results}
+
+        elif id_competence is not None:
+            # Recherche par compétence
+            cursor3 = conn.cursor(buffered=True)
+            cursor3.execute("""
+                SELECT 
+                    personne.id,
+                    personne.nom,
+                    personne.prenom,
+                    personne.poste,
+                    personne.intercontrat,
+                    hard.competence1,
+                    hard.categorie,
+                    niveau_hard.niveau
+                FROM niveau_hard
+                JOIN hard ON niveau_hard.id_hard = hard.id
+                JOIN personne ON niveau_hard.id_personne = personne.id
+                WHERE niveau_hard.id_hard = %s
+                ORDER BY personne.nom, personne.prenom
+            """, (id_competence,))
+            results = cursor3.fetchall()
+            cursor3.close()
+            return {'type': 'competence', 'results': results}
+
+        else:
+            return {'type': 'aucun', 'message': 'Aucun identifiant fourni'}
+
+    finally:
         conn.close()
-        return {'type': 'personne', 'hard': hard_results, 'soft': soft_results}
-
-    elif id_competence is not None:
-        cursor3 = conn.cursor(buffered=True)
-        cursor3.execute("""
-            SELECT 
-                personne.nom,
-                personne.prenom,
-                personne.poste,
-                niveau_hard.niveau
-                personne.intercontrat,
-                personne.id,
-                hard.competence1,
-                hard.categorie,
-            FROM niveau_hard
-            JOIN hard ON niveau_hard.id_hard = hard.id
-            JOIN personne ON niveau_hard.id_personne = personne.id
-            WHERE niveau_hard.id_hard = %s
-            ORDER BY personne.nom, personne.prenom
-        """, (id_competence,))
-        results = cursor3.fetchall()
-        cursor3.close()
-        conn.close()
-        return {'type': 'competence', 'results': results}
-
-    else:
-        conn.close()
-        return {'type': 'aucun', 'message': 'Aucun identifiant fourni'}
 
 
 
+def texte_a_trou(id_personne, chemin_texte="Nom Prenom.txt"):
+    # Connexion base de données
+    conn = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="matrice"
+    )
+    cursor = conn.cursor(buffered=True)
+
+    # Récupération des données
+    cursor.execute("SELECT nom, prenom, poste, intercontrat FROM personne WHERE id = %s", (id_personne,))
+    personne = cursor.fetchone()  # (nom, prenom, poste)
+
+    cursor.execute("""
+        SELECT hard.competence1, hard.categorie, niveau_hard.niveau
+        FROM hard
+        JOIN niveau_hard ON hard.id = niveau_hard.id_hard
+        WHERE niveau_hard.id_personne = %s
+    """, (id_personne,))
+    hard_skills = cursor.fetchall()  # liste de tuples
+
+    cursor.execute("""
+        SELECT soft.competence2, niveau_soft.niveau
+        FROM soft
+        JOIN niveau_soft ON soft.id = niveau_soft.id_soft
+        WHERE niveau_soft.id_personne = %s
+    """, (id_personne,))
+    soft_skills = cursor.fetchall()
+
+    conn.close()
+
+    # Lecture du texte à trous
+    with open(chemin_texte, 'r', encoding='utf-8') as f:
+        texte = f.read()
+
+    # Remplacements
+    texte = texte.replace("Nom", personne[0])
+    texte = texte.replace("Prenom", personne[1])
+    texte = texte.replace("Poste", personne[2])
+    texte = texte.replace("Disponibilité", personne[3])
+
+    for i, (comp, cat, niveau) in enumerate(hard_skills):
+        texte = texte.replace(f"HardSkill{i+1}", f"{comp} ({cat}) - {niveau}")
+
+    for i, (comp, niveau) in enumerate(soft_skills):
+        texte = texte.replace(f"SoftSkill{i+1}", f"{comp} - {niveau}")
+
+    print(texte)
+
+    # Facultatif : écrire dans un nouveau fichier
+    #with open("resultat.txt", "w", encoding="utf-8") as f_out:
+    #     f_out.write(texte)

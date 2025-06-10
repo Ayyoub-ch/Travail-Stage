@@ -1,6 +1,8 @@
-from flask import Flask, render_template, abort, redirect, url_for, request, flash
-from import_bdd_mysql import get_data, get_personn, recherche_avec_filtre,get_comp,get_all_hard_competences
+from flask import Flask, render_template, abort, redirect, url_for, request, flash, abort
+from import_bdd_mysql import get_data, get_personn, recherche_avec_filtre,get_comp, get_all_hard_competences, texte_a_trou
 import import_excel_all
+from import_bdd_mysql import texte_a_trou
+
 
 app = Flask(__name__)
 
@@ -25,7 +27,7 @@ def importer_matrice():
         abort(500, description="Erreur lors de l'importation des matrices.")
 
 
-
+"""
 @app.route('/voir_comp', methods=['POST'])
 def voir_comp():
     try:
@@ -38,7 +40,7 @@ def voir_comp():
     except Exception as e:
         app.logger.error(f"An error occurred: {e}")
         abort(500, description="An error occurred while fetching data from the database.")
-
+"""
 @app.route('/retour', methods=['POST'])
 def retour():
     return render_template("admin.html")
@@ -134,6 +136,25 @@ def rechercher():
         liste_competences=liste_competences
     )
 
+@app.route('/ecrire', methods=['POST'])
+def ecrire_cv():
+    try:
+        id_personne = request.form.get('id_personne')
+        if not id_personne or not id_personne.isdigit():
+            abort(400, description="ID personne invalide")
+            
+        texte_genere = texte_a_trou(int(id_personne))
+        return texte_genere, 200, {'Content-Type': 'text/plain; charset=utf-8'}
+
+    except FileNotFoundError as e:
+        app.logger.error(str(e))
+        abort(404, description=str(e))
+    except ValueError as e:
+        app.logger.error(str(e))
+        abort(404, description=str(e))
+    except Exception as e:
+        app.logger.error(f"Erreur lors de la génération du texte à trous : {e}")
+        abort(500, description="Erreur lors de la génération du CV.")
 
 
 

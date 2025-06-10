@@ -1,0 +1,13 @@
+Matrice 
+Civilité : 
+Nom Prénom –  Poste
+
+Disponibilité:
+Oui Ou Non
+
+Soft skills : 
+Compétence 1 – niveau 1 ; Compétence 2 – niveau 2 ; ….
+Hard skills : 
+Compétence 1 – Catégorie 1 – niveau 1 ; Compétence 2 – Catégorie 2 – niveau 2 ; ….
+Parcours : 
+Société 1 – Poste 1 – Compétence Hard saisie 1 – Compétence Soft saisie 1 ; Société 2 – Poste 2 – Compétence Hard saisie 2 – Compétence Soft saisie 2 ; … 

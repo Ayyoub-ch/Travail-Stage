@@ -15,3 +15,8 @@ ex:si la case à cocher intercontrat est coché et que l'utilistateur (de l'appl
 
 
 
+Mission secondaire :
+
+But: générer un fichier txt par personne qui intègre toutes les informations de la matrice , (utilisation du modèle de Nicolas)
+
+

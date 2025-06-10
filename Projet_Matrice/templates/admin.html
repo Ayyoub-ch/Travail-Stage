@@ -87,8 +87,13 @@
     </form>
 
     <!-- Formulaire pour voir les compétences -->
-    <form action="{{ url_for('voir_comp') }}" method="post">
+    <form action="{{ url_for('rechercher') }}" method="post">
         <button type="submit">Voir les compétences</button>
+    </form>
+
+    <!-- Formulaire pour écrire le cv -->
+    <form action="{{ url_for('ecrire_cv') }}" method="post">
+        <button type="submit">Ecrire les CV</button>
     </form>
 
     <!-- Loader -->
