@@ -182,9 +182,10 @@
             <select class="select-style" id="choix_competence" name="choix_competence">
                 <option value="">-- Sélectionnez une compétence --</option>
                 {% for comp in liste_competences %}
-                    <option value="{{ comp[0] }}">{{ comp[1] }}</option>
+                    <option value="{{ comp[0] }}">{{ comp[0] }}</option>
                 {% endfor %}
             </select>
+
 
             <button type="submit" class="search-button">Rechercher</button>
         </div>

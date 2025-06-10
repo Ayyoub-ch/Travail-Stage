@@ -59,7 +59,6 @@ def rechercher():
     personnes = get_personn(intercontrat=intercontrat)
     liste_competences = get_all_hard_competences()
 
-
     if not choix_personne and not choix_competence:
         return render_template(
             "recherche.html",
@@ -89,10 +88,8 @@ def rechercher():
             )
 
         elif choix_competence:
-            id_competence = int(choix_competence)
-            results = recherche_avec_filtre(id_competence=id_competence)
-            hard_skills=get_comp(id_competence)
-
+            results = recherche_avec_filtre(competence=choix_competence)
+            hard_skills = get_comp(choix_competence)
 
             hard_results = results.get("results", [])
 
@@ -136,25 +133,12 @@ def rechercher():
         liste_competences=liste_competences
     )
 
-@app.route('/ecrire', methods=['POST'])
-def ecrire_cv():
-    try:
-        id_personne = request.form.get('id_personne')
-        if not id_personne or not id_personne.isdigit():
-            abort(400, description="ID personne invalide")
-            
-        texte_genere = texte_a_trou(int(id_personne))
-        return texte_genere, 200, {'Content-Type': 'text/plain; charset=utf-8'}
 
-    except FileNotFoundError as e:
-        app.logger.error(str(e))
-        abort(404, description=str(e))
-    except ValueError as e:
-        app.logger.error(str(e))
-        abort(404, description=str(e))
-    except Exception as e:
-        app.logger.error(f"Erreur lors de la génération du texte à trous : {e}")
-        abort(500, description="Erreur lors de la génération du CV.")
+@app.route('/ecrire', methods=['POST'])
+def ecrire_cv():      
+    texte_genere = texte_a_trou()
+    return redirect(url_for('index')), texte_genere
+
 
 
 

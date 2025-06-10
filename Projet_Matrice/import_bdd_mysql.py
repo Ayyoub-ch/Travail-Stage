@@ -1,6 +1,8 @@
 # import_bdd_mysql.py
 
 import mysql.connector
+import os
+from datetime import datetime
 
 
 def get_all_hard_competences():
@@ -12,7 +14,7 @@ def get_all_hard_competences():
     )
     try:
         cursor = conn.cursor()
-        cursor.execute("SELECT DISTINCT id, competence1 FROM hard ORDER BY competence1")
+        cursor.execute("SELECT DISTINCT competence1 FROM hard ORDER BY competence1")
         result = cursor.fetchall()
         cursor.close()
         return result  # Liste de tuples : [(1, "Python"), (2, "SQL"), ...]
@@ -114,7 +116,7 @@ def get_data():
     finally:
         conn.close()
 
-def recherche_avec_filtre(id_personne=None, id_competence=None):
+def recherche_avec_filtre(id_personne=None, competence=None):
     import mysql.connector
     conn = mysql.connector.connect(
         host="localhost",
@@ -147,7 +149,7 @@ def recherche_avec_filtre(id_personne=None, id_competence=None):
 
             cursor2 = conn.cursor(buffered=True)
             cursor2.execute("""
-                SELECT 
+                SELECT DISTINCT
                     personne.id,
                     personne.nom, 
                     personne.prenom, 
@@ -165,7 +167,7 @@ def recherche_avec_filtre(id_personne=None, id_competence=None):
 
             return {'type': 'personne', 'hard': hard_results, 'soft': soft_results}
 
-        elif id_competence is not None:
+        elif competence is not None:
             # Recherche par compétence
             cursor3 = conn.cursor(buffered=True)
             cursor3.execute("""
@@ -181,9 +183,9 @@ def recherche_avec_filtre(id_personne=None, id_competence=None):
                 FROM niveau_hard
                 JOIN hard ON niveau_hard.id_hard = hard.id
                 JOIN personne ON niveau_hard.id_personne = personne.id
-                WHERE niveau_hard.id_hard = %s
+                WHERE hard.competence1 = %s
                 ORDER BY personne.nom, personne.prenom
-            """, (id_competence,))
+            """, (competence,))
             results = cursor3.fetchall()
             cursor3.close()
             return {'type': 'competence', 'results': results}
@@ -196,7 +198,8 @@ def recherche_avec_filtre(id_personne=None, id_competence=None):
 
 
 
-def texte_a_trou(id_personne, chemin_texte="Nom Prenom.txt"):
+
+def texte_a_trou():
     # Connexion base de données
     conn = mysql.connector.connect(
         host="localhost",
@@ -207,45 +210,72 @@ def texte_a_trou(id_personne, chemin_texte="Nom Prenom.txt"):
     cursor = conn.cursor(buffered=True)
 
     # Récupération des données
-    cursor.execute("SELECT nom, prenom, poste, intercontrat FROM personne WHERE id = %s", (id_personne,))
-    personne = cursor.fetchone()  # (nom, prenom, poste)
+    cursor.execute("SELECT id FROM personne")
+    liste_personne=cursor.fetchall()
+    for id in liste_personne:
+        texte_export=None
+        cursor.execute("SELECT nom, prenom, poste, intercontrat FROM personne WHERE id = %s", (id,))
+        personne = cursor.fetchone()  # (nom, prenom, poste)
+        print(id)
+        cursor.execute("""
+            SELECT hard.competence1, hard.categorie, niveau_hard.niveau
+            FROM hard
+            JOIN niveau_hard ON hard.id = niveau_hard.id_hard
+            WHERE niveau_hard.id_personne = %s
+        """, (id,))
+        hard_skills = cursor.fetchall()  # liste de tuples
 
-    cursor.execute("""
-        SELECT hard.competence1, hard.categorie, niveau_hard.niveau
-        FROM hard
-        JOIN niveau_hard ON hard.id = niveau_hard.id_hard
-        WHERE niveau_hard.id_personne = %s
-    """, (id_personne,))
-    hard_skills = cursor.fetchall()  # liste de tuples
+        cursor.execute("""
+            SELECT soft.competence2, niveau_soft.niveau
+            FROM soft
+            JOIN niveau_soft ON soft.id = niveau_soft.id_soft
+            WHERE niveau_soft.id_personne = %s
+        """, (id,))
+        soft_skills = cursor.fetchall()
 
-    cursor.execute("""
-        SELECT soft.competence2, niveau_soft.niveau
-        FROM soft
-        JOIN niveau_soft ON soft.id = niveau_soft.id_soft
-        WHERE niveau_soft.id_personne = %s
-    """, (id_personne,))
-    soft_skills = cursor.fetchall()
+        conn.close()
 
-    conn.close()
 
-    # Lecture du texte à trous
-    with open(chemin_texte, 'r', encoding='utf-8') as f:
-        texte = f.read()
+        if personne[3]==1:
+            dispo="oui"
+        else:
+            dispo="non"
 
-    # Remplacements
-    texte = texte.replace("Nom", personne[0])
-    texte = texte.replace("Prenom", personne[1])
-    texte = texte.replace("Poste", personne[2])
-    texte = texte.replace("Disponibilité", personne[3])
+        texte_export = (
+            f"Matrice \n"
+            f"Civilité : \n{personne[0]} {personne[1]} - {personne[2]}\n"
+            f"Disponibilité : \n{dispo}\n"
+            f"Soft Skills : \n"
+        )    
 
-    for i, (comp, cat, niveau) in enumerate(hard_skills):
-        texte = texte.replace(f"HardSkill{i+1}", f"{comp} ({cat}) - {niveau}")
+        for comp, niveau in soft_skills:
+            texte_export += f"{comp} - {niveau}; "
 
-    for i, (comp, niveau) in enumerate(soft_skills):
-        texte = texte.replace(f"SoftSkill{i+1}", f"{comp} - {niveau}")
+        texte_export += "\nHard Skills : \n"
 
-    print(texte)
+        for comp, cat, niveau in hard_skills:
+            texte_export += f"{comp} - {cat} - {niveau}; "
 
-    # Facultatif : écrire dans un nouveau fichier
-    #with open("resultat.txt", "w", encoding="utf-8") as f_out:
-    #     f_out.write(texte)
+        texte_export += "\nParcours : \n"
+
+        print(texte_export)
+
+        # Création d'un dossier pour stocker les fichiers
+        # Exemple : "exports/texte_1325_20250610"
+        # Chemin absolu ou relatif vers le dossier souhaité
+        dossier_path = os.path.expanduser("~/Documents/dossier_chatbot")
+
+        # Créer le dossier s'il n'existe pas
+        os.makedirs(dossier_path, exist_ok=True)
+
+        # Générer le fichier texte dans ce dossier
+        fichier_path = os.path.join(dossier_path, f"{personne[0]} {personne[1]}.txt")
+
+        # Convertir texte_export (qui est une suite de tuples) en texte simple
+        texte_final = ''.join(map(str, texte_export))
+
+        # Écriture dans le fichier
+        with open(fichier_path, "w", encoding="utf-8") as f_out:
+            f_out.write(texte_final)
+
+        print(f"Fichier exporté dans : {fichier_path}")
