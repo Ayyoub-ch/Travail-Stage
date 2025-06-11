@@ -171,20 +171,20 @@
                 Afficher uniquement les personnes en intercontrat
             </label>
 
-            <!-- Ligne des champs de recherche -->
             <select class="select-style" id="choix_personne" name="choix_personne">
                 <option value="">-- Sélectionnez une personne --</option>
                 {% for p in personnes %}
-                    <option value="{{ p[0] }}">{{ p[1] }} {{ p[2] }}</option>
+                    <option value="{{ p[0] }}" {% if p[0]|string == choix_personne|string %}selected{% endif %}>{{ p[1] }} {{ p[2] }}</option>
                 {% endfor %}
             </select>
 
             <select class="select-style" id="choix_competence" name="choix_competence">
                 <option value="">-- Sélectionnez une compétence --</option>
                 {% for comp in liste_competences %}
-                    <option value="{{ comp[0] }}">{{ comp[0] }}</option>
+                    <option value="{{ comp[0] }}" {% if comp[0]|string == choix_competence|string %}selected{% endif %}>{{ comp[0] }}</option>
                 {% endfor %}
             </select>
+
 
 
             <button type="submit" class="search-button">Rechercher</button>

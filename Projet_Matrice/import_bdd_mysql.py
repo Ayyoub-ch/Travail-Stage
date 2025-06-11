@@ -212,8 +212,8 @@ def texte_a_trou():
     # Récupération des données
     cursor.execute("SELECT id FROM personne")
     liste_personne=cursor.fetchall()
-    for id in liste_personne:
-        texte_export=None
+    for row in liste_personne:
+        id = row[0]
         cursor.execute("SELECT nom, prenom, poste, intercontrat FROM personne WHERE id = %s", (id,))
         personne = cursor.fetchone()  # (nom, prenom, poste)
         print(id)
@@ -232,8 +232,6 @@ def texte_a_trou():
             WHERE niveau_soft.id_personne = %s
         """, (id,))
         soft_skills = cursor.fetchall()
-
-        conn.close()
 
 
         if personne[3]==1:
@@ -272,10 +270,12 @@ def texte_a_trou():
         fichier_path = os.path.join(dossier_path, f"{personne[0]} {personne[1]}.txt")
 
         # Convertir texte_export (qui est une suite de tuples) en texte simple
-        texte_final = ''.join(map(str, texte_export))
+        texte_final = texte_export
 
         # Écriture dans le fichier
         with open(fichier_path, "w", encoding="utf-8") as f_out:
             f_out.write(texte_final)
 
-        print(f"Fichier exporté dans : {fichier_path}")
+    conn.close()
+
+    print(f"Fichier exporté dans : {fichier_path}")

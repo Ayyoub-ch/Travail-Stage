@@ -1,7 +1,7 @@
 1- renomme le bouton recherche personne en rechercher et supprimer le 2e bouton✅
 
 2- La liste des compétences --> afficher à l'ouverture de la page 
-quand on selectionne une compétence, on pourra appuyer sur le bouton rechercher (1) ce qui affichera le tableau des personnes
+quand on selectionne une compétence, on pourra appuyer sur le bouton rechercher (1) ce qui affichera le tableau des personnes✅
 
 3- faire le tableau des personnes, afficher le nom , le prénom, le poste et l'intercontrat
 (afficher oui si c'est égal à 1, non si c'est égal à 0
@@ -17,6 +17,6 @@ ex:si la case à cocher intercontrat est coché et que l'utilistateur (de l'appl
 
 Mission secondaire :
 
-But: générer un fichier txt par personne qui intègre toutes les informations de la matrice , (utilisation du modèle de Nicolas)
+But: générer un fichier txt par personne qui intègre toutes les informations de la matrice , (utilisation du modèle de Nicolas)✅
 
 

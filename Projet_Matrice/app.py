@@ -136,8 +136,8 @@ def rechercher():
 
 @app.route('/ecrire', methods=['POST'])
 def ecrire_cv():      
-    texte_genere = texte_a_trou()
-    return redirect(url_for('index')), texte_genere
+    texte_a_trou()
+    return redirect(url_for('index'))
 
 
 

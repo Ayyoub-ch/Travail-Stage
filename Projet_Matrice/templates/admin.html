@@ -97,23 +97,14 @@
     </div>
 
     <!-- Formulaire pour écrire le cv -->
-    <form action="{{ url_for('ecrire_cv') }}" method="post" onsubmit="showLoader2()">
+    <form action="{{ url_for('ecrire_cv') }}" method="post">
         <button type="submit">Ecrire les CV</button>
     </form>
-
-    <!-- Loader2 -->
-    <div id="loader2">
-        <p>⏳ Création des CV en cours...</p>
-    </div>
 
     <!-- JavaScript -->
     <script>
         function showLoader() {
             document.getElementById('loader').style.display = 'block';
-        }
-
-        function showLoader2() {
-            document.getElementById('loader2').style.display = 'block';
         }
     </script>
 </body>
