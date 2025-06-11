@@ -2,7 +2,7 @@ from flask import Flask, render_template, abort, redirect, url_for, request, fla
 from import_bdd_mysql import get_data, get_personn, recherche_avec_filtre,get_comp, get_all_hard_competences, texte_a_trou
 import import_excel_all
 from import_bdd_mysql import texte_a_trou
-
+import mysql.connector
 
 app = Flask(__name__)
 
@@ -139,7 +139,24 @@ def ecrire_cv():
     texte_a_trou()
     return redirect(url_for('index'))
 
+@app.route('/maj_intercontrat', methods=['POST'])
+def maj_intercontrat():
+    id_personne = request.form.get('id_personne')
+    intercontrat_val = 1 if request.form.get('intercontrat_personne') == '1' else 0
 
+    conn = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="matrice"
+    )
+    cursor = conn.cursor()
+    cursor.execute("UPDATE personne SET intercontrat = %s WHERE id = %s", (intercontrat_val, id_personne))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+    return redirect(url_for('index'))  # Redirige vers la page d’administration ou la page souhaitée
 
 
 

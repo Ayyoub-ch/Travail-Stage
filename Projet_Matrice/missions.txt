@@ -4,7 +4,7 @@
 quand on selectionne une compétence, on pourra appuyer sur le bouton rechercher (1) ce qui affichera le tableau des personnes✅
 
 3- faire le tableau des personnes, afficher le nom , le prénom, le poste et l'intercontrat
-(afficher oui si c'est égal à 1, non si c'est égal à 0
+(afficher oui si c'est égal à 1, non si c'est égal à 0✅
 
 4-A la sélection de la personne, afficher la case de l'intercontrat coché SI cette personne est en intercontrat, 
 et la décocher si c'est le contraire
@@ -19,4 +19,10 @@ Mission secondaire :
 
 But: générer un fichier txt par personne qui intègre toutes les informations de la matrice , (utilisation du modèle de Nicolas)✅
 
+
+remarque :
+pour afficher toutes les personnes en intercontrat, 
+ça met la personne en plusieurs fois mais ça ne se met pas à jour dans la bdd ni sur le site 
+
+REGLER LES CASES A COCHER
 

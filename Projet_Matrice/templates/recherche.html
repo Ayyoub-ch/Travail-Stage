@@ -165,11 +165,20 @@
 <div class="search-forms">
     <form action="{{ url_for('rechercher') }}" method="post">
         <div class="form-group">
-            <!-- Case à cocher - Ligne spécifique comme sur l'image -->
+           <!-- Case à cocher - Ligne spécifique comme sur l'image -->
             <label class="intercontrat-checkbox">
                 <input type="checkbox" name="intercontrat" {% if intercontrat %}checked{% endif %}>
                 Afficher uniquement les personnes en intercontrat
             </label>
+
+            <!-- Formulaire pour modifier l'intercontrat d'une personne -->
+            <form method="post" action="{{ url_for('maj_intercontrat') }}">
+                <input type="hidden" name="id_personne" value="{{ personne_id }}">
+                <label class="intercontrat-checkbox">
+                    <input type="checkbox" name="intercontrat_personne" value="1" onchange="this.form.submit()" {% if intercontrat %}checked{% endif %}>
+                    Mettre cette personne en intercontrat
+                </label>
+            </form>
 
             <select class="select-style" id="choix_personne" name="choix_personne">
                 <option value="">-- Sélectionnez une personne --</option>
@@ -197,8 +206,8 @@
         <h1> Compétences de {{ hard_results[0][1] }} {{ hard_results[0][2] }}</h1>
     </div>
     <h2> Poste : {{ hard_results[0][3] }} </h2>
-    <h2> Numéro : {{ hard_results[0][0] }} </h2>
-    <h2>Intercontrat : {{ hard_results[0][4] }}</h2>
+    <!--<h2> Numéro : {{ hard_results[0][0] }} </h2>-->
+    <h2>Intercontrat : {{ 'oui' if hard_results[0][4] == 1 else 'non' }}</h2>
 {% endif %}
 
 <!-- Résultats de la recherche par compétence -->

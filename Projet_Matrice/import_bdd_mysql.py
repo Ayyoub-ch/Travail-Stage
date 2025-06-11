@@ -196,7 +196,29 @@ def recherche_avec_filtre(id_personne=None, competence=None):
     finally:
         conn.close()
 
+def maj_intercontrat():
+    conn = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="matrice"
+    )
+    cursor0 = conn.cursor(buffered=True)
+    cursor0.execute("SELECT id FROM personne")
+    id_personne=cursor0.fetchall()
 
+    cursor1 = conn.cursor(buffered=True)
+    cursor1.execute("SELECT id FROM personne")
+    intercontrat=cursor1.fetchall()
+
+    cursor = conn.cursor(buffered=True)
+    
+    if intercontrat== 1:
+        cursor.execute("UPDATE personne SET intercontrat = 0 WHERE id='%s';", (id_personne,))
+    else:
+        cursor.execute("UPDATE personne SET intercontrat = 1 WHERE id='%s';", (id_personne,))
+    
+    conn.close()
 
 
 def texte_a_trou():
@@ -247,12 +269,12 @@ def texte_a_trou():
         )    
 
         for comp, niveau in soft_skills:
-            texte_export += f"{comp} - {niveau}; "
+            texte_export += f"- {comp} (niveau:{niveau}); \n"
 
         texte_export += "\nHard Skills : \n"
 
         for comp, cat, niveau in hard_skills:
-            texte_export += f"{comp} - {cat} - {niveau}; "
+            texte_export += f"- {comp}  (niveau:{niveau}); \n"
 
         texte_export += "\nParcours : \n"
 
