@@ -50,13 +50,13 @@ def retour():
 def rechercher():
     choix_personne = request.form.get("choix_personne")
     choix_competence = request.form.get("choix_competence")
-    intercontrat = 1 if 'intercontrat' in request.form else 0
+    filtre_intercontrat = 1 if 'intercontrat' in request.form else 0
 
     print("Choix personne reçu :", repr(choix_personne))
     print("Choix compétence reçu :", repr(choix_competence))
-    print("Intercontrat cochée :", intercontrat)
+    print("Intercontrat cochée :", filtre_intercontrat)
 
-    personnes = get_personn(intercontrat=intercontrat)
+    personnes = get_personn(intercontrat=filtre_intercontrat)
     liste_competences = get_all_hard_competences()
 
     if not choix_personne and not choix_competence:
@@ -67,7 +67,7 @@ def rechercher():
             soft_results=[],
             choix_personne="",
             choix_competence="",
-            intercontrat=intercontrat,
+            filtre_intercontrat=filtre_intercontrat,
             liste_competences=liste_competences
         )
 
@@ -83,7 +83,7 @@ def rechercher():
                 soft_results=results.get("soft", []),
                 choix_personne=choix_personne,
                 choix_competence="",
-                intercontrat=intercontrat,
+                filtre_intercontrat=filtre_intercontrat,
                 liste_competences=liste_competences
             )
 
@@ -93,7 +93,7 @@ def rechercher():
 
             hard_results = results.get("results", [])
 
-            if intercontrat == 1:
+            if filtre_intercontrat == 1:
                 hard_results = [res for res in hard_results if res[4] == 1]  # col 4 = intercontrat
 
             return render_template(
@@ -103,7 +103,7 @@ def rechercher():
                 soft_results=[],  # pas de soft dans ce cas
                 choix_personne="",
                 choix_competence=choix_competence,
-                intercontrat=intercontrat,
+                filtre_intercontrat=filtre_intercontrat,
                 hard_skills=hard_skills,
                 liste_competences=liste_competences
             )
@@ -117,7 +117,7 @@ def rechercher():
             soft_results=[],
             choix_personne=choix_personne,
             choix_competence=choix_competence,
-            intercontrat=intercontrat,
+            filtre_intercontrat=filtre_intercontrat,
             liste_competences=liste_competences
         )
 
@@ -129,7 +129,7 @@ def rechercher():
         soft_results=[],
         choix_personne="",
         choix_competence="",
-        intercontrat=intercontrat,
+        filtre_intercontrat=filtre_intercontrat,
         liste_competences=liste_competences
     )
 

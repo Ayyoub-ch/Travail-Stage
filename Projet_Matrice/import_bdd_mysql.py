@@ -33,7 +33,7 @@ def get_personn(intercontrat=0):
     )
     cursor = conn.cursor()
 
-    if intercontrat:
+    if intercontrat== 1:
         cursor.execute("SELECT id, nom, prenom FROM personne WHERE intercontrat = 1")
     else:
         cursor.execute("SELECT id, nom, prenom FROM personne")
