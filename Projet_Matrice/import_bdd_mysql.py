@@ -361,7 +361,7 @@ def mapping():
     for comp, niveau in hard:
         competence=comp
         niveau=niveau
-
+#à poursuivre
     conn_cvtech.commit()
 
     # Fermeture des connexions
