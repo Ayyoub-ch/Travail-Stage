@@ -1,5 +1,5 @@
 from flask import Flask, render_template, abort, redirect, url_for, request, flash, abort
-from import_bdd_mysql import get_data, get_personn, recherche_avec_filtre,get_comp, get_all_hard_competences, texte_a_trou
+from import_bdd_mysql import get_data, get_personn, recherche_avec_filtre,get_comp, get_all_hard_competences, texte_a_trou, mapping
 import import_excel_all
 from import_bdd_mysql import texte_a_trou
 import mysql.connector
@@ -138,6 +138,14 @@ def rechercher():
 def ecrire_cv():      
     texte_a_trou()
     return redirect(url_for('index'))
+
+
+@app.route('/cvtech', methods=['POST'])
+def mapping_cvtech():      
+    mapping()
+    return redirect(url_for('index'))
+
+
 
 @app.route('/maj_intercontrat', methods=['POST'])
 def maj_intercontrat():

@@ -301,3 +301,57 @@ def texte_a_trou():
     conn.close()
 
     print(f"Fichier exporté dans : {fichier_path}")
+
+
+def mapping():
+    # Connexion à la base "cvtech"
+    conn_cvtech = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="cvtech"
+    )
+    cursor_cvtech = conn_cvtech.cursor(buffered=True)
+
+    # Connexion à la base "matrice"
+    conn_matrice = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",
+        database="matrice"
+    )
+    cursor_matrice = conn_matrice.cursor(buffered=True)
+
+    # Récupération des noms et prénoms
+    cursor_matrice.execute("SELECT id, nom, prenom, poste, intercontrat FROM personne;")
+    personnes = cursor_matrice.fetchall()
+
+    for id, nom, prenom, poste, intercontrat in personnes:
+        id=id
+        last_name = nom.lower()
+        first_name = prenom.lower()
+        mail = last_name[0] + first_name + "@logical-conseils.com"
+        roles=poste
+        on_mission=intercontrat
+        password="logical"
+
+        print(f"Insertion de : {mail}")
+
+        # Insertion dans la table users
+        sql = "INSERT INTO users (id, last_name, first_name, mail, password, roles, on_mission) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+        valeurs = (id, nom, prenom, mail, password, roles, on_mission)
+
+        try:
+            cursor_cvtech.execute(sql, valeurs)
+        except mysql.connector.Error as e:
+            print(f"Erreur d'insertion : {e}")
+
+    conn_cvtech.commit()
+
+    # Fermeture des connexions
+    cursor_cvtech.close()
+    conn_cvtech.close()
+    cursor_matrice.close()
+    conn_matrice.close()
+
+
