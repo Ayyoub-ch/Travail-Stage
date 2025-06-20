@@ -346,6 +346,22 @@ def mapping():
         except mysql.connector.Error as e:
             print(f"Erreur d'insertion : {e}")
 
+
+    cursor_matrice.execute("""SELECT hard.competence1, hard.categorie, niveau_hard.niveau FROM hard;""")
+    hard=cursor_matrice.fetchall()
+
+    for comp, cat, niveau in hard:
+        competence=comp
+        categorie=cat
+        niveau=niveau
+
+    cursor_matrice.execute("""soft.competence2, niveau_soft.niveau FROM soft""")
+    soft=cursor_matrice.fetchall()
+
+    for comp, niveau in hard:
+        competence=comp
+        niveau=niveau
+
     conn_cvtech.commit()
 
     # Fermeture des connexions
