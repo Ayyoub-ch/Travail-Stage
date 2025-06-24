@@ -360,7 +360,13 @@ def mapping():
         # Vérifier si la compétence existe déjà
         cursor_cvtech.execute("SELECT id FROM skills WHERE name = %s", (competence2,))
         skill = cursor_cvtech.fetchone()
+        niveau=niveau
 
+        if niveau=="Non Acquis":
+            niveau=0
+        else:
+            niveau=1
+            
         if skill:
             id_skill = skill[0]
         else:
@@ -373,9 +379,11 @@ def mapping():
         # Associer à l'utilisateur si ce n'est pas déjà fait
         try:
             cursor_cvtech.execute(
-                "INSERT INTO user_skills (id_user, id_skill, niveau) VALUES (%s, %s, %s)",
+                "INSERT INTO user_skills (id_user, id_skill, level) VALUES (%s, %s, %s)",
                 (id_user, id_skill, niveau)
             )
+            print(f"[SOFT] id_user: {id_user}, id_skill: {id_skill}, level: {niveau}")
+            
         except mysql.connector.Error as e:
             print(f"Erreur d'association soft skill (user {id_user}, skill {id_skill}): {e}")
 
@@ -393,6 +401,7 @@ def mapping():
         cursor_cvtech.execute("SELECT id FROM skill_categories WHERE name = %s", (categorie,))
         cat = cursor_cvtech.fetchone()
         id_cat_hard = cat[0] if cat else None
+        niveau=niveau
 
         if not id_cat_hard:
             cursor_cvtech.execute("INSERT INTO skill_categories (name) VALUES (%s)", (categorie,))
@@ -414,9 +423,11 @@ def mapping():
         # Associer à l'utilisateur si ce n'est pas déjà fait
         try:
             cursor_cvtech.execute(
-                "INSERT INTO user_skills (id_user, id_skill, niveau) VALUES (%s, %s, %s)",
+                "INSERT INTO user_skills (id_user, id_skill, level) VALUES (%s, %s, %s)",
                 (id_user, id_skill, niveau)
             )
+            print(f"[HARD] id_user: {id_user}, id_skill: {id_skill}, level: {niveau}")
+
         except mysql.connector.Error as e:
             print(f"Erreur d'association hard skill (user {id_user}, skill {id_skill}): {e}")
 
