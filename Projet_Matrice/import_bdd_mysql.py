@@ -276,7 +276,7 @@ def texte_a_trou():
         for comp, cat, niveau in hard_skills:
             texte_export += f"- {comp}  (niveau:{niveau}); \n"
 
-        texte_export += "\nParcours : \n"
+        #texte_export += "\nParcours : \n"
 
         print(texte_export)
 
