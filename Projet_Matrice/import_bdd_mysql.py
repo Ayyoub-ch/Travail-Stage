@@ -304,67 +304,140 @@ def texte_a_trou():
 
 
 def mapping():
-    # Connexion à la base "cvtech"
+    import mysql.connector
+
+    # Connexion aux deux bases
     conn_cvtech = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="",
-        database="cvtech"
+        host="localhost", user="root", password="", database="cvtech"
     )
     cursor_cvtech = conn_cvtech.cursor(buffered=True)
 
-    # Connexion à la base "matrice"
     conn_matrice = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="",
-        database="matrice"
+        host="localhost", user="root", password="", database="matrice"
     )
     cursor_matrice = conn_matrice.cursor(buffered=True)
 
-    # Récupération des noms et prénoms
+    # --- Import des utilisateurs ---
     cursor_matrice.execute("SELECT id, nom, prenom, poste, intercontrat FROM personne;")
     personnes = cursor_matrice.fetchall()
 
     for id, nom, prenom, poste, intercontrat in personnes:
-        id=id
         last_name = nom.lower()
         first_name = prenom.lower()
         mail = last_name[0] + first_name + "@logical-conseils.com"
-        roles=poste
-        on_mission=intercontrat
-        password="logical"
+        password = "logical"
+        roles = poste
+        on_mission = intercontrat
 
         print(f"Insertion de : {mail}")
-
-        # Insertion dans la table users
-        sql = "INSERT INTO users (id, last_name, first_name, mail, password, roles, on_mission) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-        valeurs = (id, nom, prenom, mail, password, roles, on_mission)
-
         try:
-            cursor_cvtech.execute(sql, valeurs)
+            cursor_cvtech.execute("""
+                INSERT INTO users (id, last_name, first_name, mail, password, roles, on_mission)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+            """, (id, nom, prenom, mail, password, roles, on_mission))
         except mysql.connector.Error as e:
-            print(f"Erreur d'insertion : {e}")
+            print(f"Erreur d'insertion user : {e}")
 
+    # --- Import des compétences SOFT ---
+    cursor_matrice.execute("""
+        SELECT niveau_soft.id_personne, soft.competence2, niveau_soft.niveau 
+        FROM niveau_soft
+        JOIN soft ON niveau_soft.id_soft = soft.id
+    """)
+    soft = cursor_matrice.fetchall()
 
-    cursor_matrice.execute("""SELECT hard.competence1, hard.categorie, niveau_hard.niveau FROM hard;""")
-    hard=cursor_matrice.fetchall()
+    # S'assurer que la catégorie "Soft Skills" existe
+    cursor_cvtech.execute("SELECT id FROM skill_categories WHERE name = %s", ("Soft Skills",))
+    result = cursor_cvtech.fetchone()
+    id_cat_soft = result[0] if result else None
 
-    for comp, cat, niveau in hard:
-        competence=comp
-        categorie=cat
+    if not id_cat_soft:
+        cursor_cvtech.execute("INSERT INTO skill_categories (name) VALUES (%s)", ("Soft Skills",))
+        id_cat_soft = cursor_cvtech.lastrowid
+
+    print("Insertion des soft skills...")
+    for id_user, competence2, niveau in soft:
+        # Vérifier si la compétence existe déjà
+        cursor_cvtech.execute("SELECT id FROM skills WHERE name = %s", (competence2,))
+        skill = cursor_cvtech.fetchone()
         niveau=niveau
 
-    cursor_matrice.execute("""soft.competence2, niveau_soft.niveau FROM soft""")
-    soft=cursor_matrice.fetchall()
+        if niveau=="Non Acquis":
+            niveau=0
+        else:
+            niveau=1
+            
+        if skill:
+            id_skill = skill[0]
+        else:
+            cursor_cvtech.execute(
+                "INSERT INTO skills (id_skill_category, name) VALUES (%s, %s)",
+                (id_cat_soft, competence2)
+            )
+            id_skill = cursor_cvtech.lastrowid
 
-    for comp, niveau in hard:
-        competence=comp
+        # Associer à l'utilisateur si ce n'est pas déjà fait
+        try:
+            cursor_cvtech.execute(
+                "INSERT INTO user_skills (id_user, id_skill, level) VALUES (%s, %s, %s)",
+                (id_user, id_skill, niveau)
+            )
+            print(f"[SOFT] id_user: {id_user}, id_skill: {id_skill}, level: {niveau}")
+            
+        except mysql.connector.Error as e:
+            print(f"Erreur d'association soft skill (user {id_user}, skill {id_skill}): {e}")
+
+    # --- Import des compétences HARD ---
+    cursor_matrice.execute("""
+        SELECT niveau_hard.id_personne, hard.competence1, hard.categorie, niveau_hard.niveau 
+        FROM niveau_hard
+        JOIN hard ON niveau_hard.id_hard = hard.id
+    """)
+    hard = cursor_matrice.fetchall()
+
+    print("Insertion des hard skills...")
+    for id_user, competence1, categorie, niveau in hard:
+        # S'assurer que la catégorie existe
+        cursor_cvtech.execute("SELECT id FROM skill_categories WHERE name = %s", (categorie,))
+        cat = cursor_cvtech.fetchone()
+        id_cat_hard = cat[0] if cat else None
         niveau=niveau
-#à poursuivre
+
+        if not id_cat_hard:
+            cursor_cvtech.execute("INSERT INTO skill_categories (name) VALUES (%s)", (categorie,))
+            id_cat_hard = cursor_cvtech.lastrowid
+
+        # Vérifier si la compétence existe
+        cursor_cvtech.execute("SELECT id FROM skills WHERE name = %s", (competence1,))
+        skill = cursor_cvtech.fetchone()
+
+        if skill:
+            id_skill = skill[0]
+        else:
+            cursor_cvtech.execute(
+                "INSERT INTO skills (id_skill_category, name) VALUES (%s, %s)",
+                (id_cat_hard, competence1)
+            )
+            id_skill = cursor_cvtech.lastrowid
+
+        # Associer à l'utilisateur si ce n'est pas déjà fait
+        try:
+            cursor_cvtech.execute(
+                "INSERT INTO user_skills (id_user, id_skill, level) VALUES (%s, %s, %s)",
+                (id_user, id_skill, niveau)
+            )
+            print(f"[HARD] id_user: {id_user}, id_skill: {id_skill}, level: {niveau}")
+
+        except mysql.connector.Error as e:
+            print(f"Erreur d'association hard skill (user {id_user}, skill {id_skill}): {e}")
+
+    # Finalisation
+    print("Soft skills récupérées :", len(soft))
+    print("Hard skills récupérées :", len(hard))
     conn_cvtech.commit()
+    conn_matrice.commit()
+    print("Migration terminée.")
 
-    # Fermeture des connexions
     cursor_cvtech.close()
     conn_cvtech.close()
     cursor_matrice.close()
