@@ -1,5 +1,0 @@
- dans la page tableaux.html:
-Une liste déroulante de personnes (récupérer les données de la table personne)
-après sélection de la personne, créer un bouton à côté qui récupère l'id de la personne et qui va afficher les trois tableaux avec
-les bonnes valeurs 
-
